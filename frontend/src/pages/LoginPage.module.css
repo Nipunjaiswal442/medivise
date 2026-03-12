@@ -121,17 +121,26 @@
   gap: 0;
 }
 
-/* Mobile logo */
-.mobileLogo {
-  display: none;
+/* Login form logo with red cross */
+.formLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
   margin-bottom: 2rem;
-  justify-content: center;
 }
 
-@media (max-width: 768px) {
-  .mobileLogo {
-    display: flex;
-  }
+.formLogoIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+}
+
+.formLogoText {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
 }
 
 /* ─── Form header ─────────────────────────────────────────────────────────── */
@@ -387,4 +396,23 @@
 
 .footerLinks a:hover {
   color: var(--color-primary);
+}
+
+/* ─── Sign-up prompt ──────────────────────────────────────────────────────── */
+.signupPrompt {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+}
+
+.signupLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.signupLink:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
 }

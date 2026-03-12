@@ -35,4 +35,11 @@ const findByEmail = (email) =>
 
 const findById = (id) => users.find((u) => u.id === id);
 
-module.exports = { users, findByEmail, findById };
+let nextId = users.length + 1;
+const addUser = (userData) => {
+  const user = { id: String(nextId++), ...userData };
+  users.push(user);
+  return user;
+};
+
+module.exports = { users, findByEmail, findById, addUser };

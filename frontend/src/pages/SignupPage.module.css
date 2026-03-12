@@ -1,0 +1,305 @@
+/* ─── Signup Page ─────────────────────────────────────────────────────────── */
+.root {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(135deg, #FEF2F2 0%, #F9FAFB 50%, #EFF6FF 100%);
+}
+
+.formCard {
+    width: 100%;
+    max-width: 520px;
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--color-gray-100);
+}
+
+/* ─── Logo ────────────────────────────────────────────────────────────────── */
+.formLogo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-bottom: 2rem;
+}
+
+.formLogoIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+}
+
+.formLogoText {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: -0.02em;
+}
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+.formHeader {
+    margin-bottom: 1.75rem;
+}
+
+.formTitle {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: 0.375rem;
+    letter-spacing: -0.02em;
+}
+
+.formSubtitle {
+    font-size: 0.9375rem;
+    color: var(--color-gray-500);
+}
+
+/* ─── Alert ───────────────────────────────────────────────────────────────── */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-left: 3px solid var(--color-error);
+    border-radius: var(--radius-md);
+    color: #991B1B;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+/* ─── Form ────────────────────────────────────────────────────────────────── */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.fieldRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 480px) {
+    .fieldRow {
+        grid-template-columns: 1fr;
+    }
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-gray-700);
+}
+
+/* ─── Input ───────────────────────────────────────────────────────────────── */
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputIcon {
+    position: absolute;
+    left: 0.875rem;
+    color: var(--color-gray-400);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    transition: color var(--transition-fast);
+}
+
+.inputWrapper:focus-within .inputIcon {
+    color: var(--color-primary);
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 0.875rem 0.75rem 2.75rem;
+    font-size: 0.9375rem;
+    color: var(--color-gray-900);
+    background: var(--color-white);
+    border: 1.5px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--color-gray-400);
+}
+
+.input:hover {
+    border-color: var(--color-gray-300);
+}
+
+.input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgb(185 28 28 / 0.12);
+}
+
+.inputError .input {
+    border-color: var(--color-error);
+}
+
+.fieldError {
+    font-size: 0.8125rem;
+    color: var(--color-error);
+}
+
+.fieldHint {
+    font-size: 0.75rem;
+    color: var(--color-gray-400);
+}
+
+/* ─── Select ──────────────────────────────────────────────────────────────── */
+.select {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--color-gray-900);
+    background: var(--color-white);
+    border: 1.5px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    outline: none;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgb(185 28 28 / 0.12);
+}
+
+.selectError {
+    border-color: var(--color-error);
+}
+
+/* ─── Password toggle ─────────────────────────────────────────────────────── */
+.togglePassword {
+    position: absolute;
+    right: 0.875rem;
+    color: var(--color-gray-400);
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast);
+}
+
+.togglePassword:hover {
+    color: var(--color-gray-600);
+}
+
+/* ─── Submit ──────────────────────────────────────────────────────────────── */
+.submitBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    box-shadow: 0 1px 3px rgb(185 28 28 / 0.3), 0 4px 12px rgb(185 28 28 / 0.2);
+    margin-top: 0.5rem;
+}
+
+.submitBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    box-shadow: 0 4px 12px rgb(185 28 28 / 0.4), 0 8px 24px rgb(185 28 28 / 0.2);
+    transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+    opacity: 0.72;
+    cursor: not-allowed;
+}
+
+/* ─── Sign-in prompt ──────────────────────────────────────────────────────── */
+.signinPrompt {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-gray-500);
+}
+
+.signinLink {
+    color: var(--color-primary);
+    font-weight: 600;
+    transition: color var(--transition-fast);
+}
+
+.signinLink:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+/* ─── Success state ───────────────────────────────────────────────────────── */
+.successCard {
+    text-align: center;
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    box-shadow: var(--shadow-xl);
+    max-width: 440px;
+}
+
+.successIcon {
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: center;
+}
+
+.successTitle {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: 0.5rem;
+}
+
+.successText {
+    font-size: 0.9375rem;
+    color: var(--color-gray-500);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.successBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 2rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-white);
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    box-shadow: 0 1px 3px rgb(185 28 28 / 0.3);
+}
+
+.successBtn:hover {
+    box-shadow: 0 4px 12px rgb(185 28 28 / 0.4);
+    transform: translateY(-1px);
+}

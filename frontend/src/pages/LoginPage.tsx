@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import Logo from '@/components/ui/Logo';
 import {
@@ -105,14 +105,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <ul className={styles.featureList}>
-            {FEATURES.map(({ icon, label }) => (
-              <li key={label} className={styles.featureItem}>
-                <span className={styles.featureIcon}>{icon}</span>
-                <span>{label}</span>
-              </li>
-            ))}
-          </ul>
+
 
           <div className={styles.panelDecoration} aria-hidden="true">
             <MedicalPattern />
@@ -123,9 +116,15 @@ export default function LoginPage() {
       {/* Right panel — form */}
       <main className={styles.formSide}>
         <div className={styles.formCard}>
-          {/* Mobile logo */}
-          <div className={styles.mobileLogo}>
-            <Logo />
+          {/* Logo with red cross in white panel */}
+          <div className={styles.formLogo}>
+            <div className={styles.formLogoIcon}>
+              <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                <rect width="40" height="40" rx="10" fill="#B91C1C" />
+                <path d="M16 10h8v6h6v8h-6v6h-8v-6h-6v-8h6V10z" fill="white" />
+              </svg>
+            </div>
+            <span className={styles.formLogoText}>Medivise</span>
           </div>
 
           <header className={styles.formHeader}>
@@ -178,9 +177,9 @@ export default function LoginPage() {
                 <label htmlFor="password" className={styles.label}>
                   Password
                 </label>
-                <a href="#" className={styles.forgotLink}>
+                <Link to="/forgot-password" className={styles.forgotLink}>
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <div className={`${styles.inputWrapper} ${errors.password ? styles.inputError : ''}`}>
                 <span className={styles.inputIcon}><LockIcon /></span>
@@ -245,6 +244,11 @@ export default function LoginPage() {
             <strong>Demo credentials:</strong> dr.smith@medivise.com / Medivise@2024
           </p>
 
+          <p className={styles.signupPrompt}>
+            Don't have an account?{' '}
+            <Link to="/signup" className={styles.signupLink}>Create an account</Link>
+          </p>
+
           <footer className={styles.formFooter}>
             <p>
               Protected under HIPAA. All access is logged and monitored.
@@ -263,14 +267,7 @@ export default function LoginPage() {
   );
 }
 
-// ─── Feature list ─────────────────────────────────────────────────────────────
 
-const FEATURES = [
-  { icon: '🧠', label: 'AI-Powered Clinical Decision Support' },
-  { icon: '💊', label: 'Real-Time Drug Interaction Checker' },
-  { icon: '📋', label: 'Evidence-Based Treatment Protocols' },
-  { icon: '🔒', label: 'HIPAA-Compliant & Secure' },
-];
 
 // ─── Decorative SVG (login-page-specific) ────────────────────────────────────
 

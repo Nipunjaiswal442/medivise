@@ -4,8 +4,12 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AppLayout from '@/components/layout/AppLayout';
 import LoginPage from '@/pages/LoginPage';
+import SignupPage from '@/pages/SignupPage';
+import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
 import DashboardPage from '@/pages/DashboardPage';
 import ChatPage from '@/pages/ChatPage';
+import SettingsPage from '@/pages/SettingsPage';
+import PatientsPage from '@/pages/PatientsPage';
 
 export default function App() {
   return (
@@ -15,6 +19,8 @@ export default function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
             {/* Protected routes with shared layout */}
             <Route
@@ -26,6 +32,8 @@ export default function App() {
             >
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/patients" element={<PatientsPage />} />
             </Route>
 
             {/* Fallback */}
@@ -36,3 +44,4 @@ export default function App() {
     </ErrorBoundary>
   );
 }
+
