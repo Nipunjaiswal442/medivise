@@ -92,6 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     try {
       await authApi.logout();
+    } catch (err) {
+      console.error('Logout failed on the backend, proceeding to clear local session.', err);
     } finally {
       localStorage.removeItem(env.TOKEN_KEY);
       sessionStorage.removeItem(env.TOKEN_KEY);
