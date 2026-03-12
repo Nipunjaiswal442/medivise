@@ -101,35 +101,7 @@
   object-fit: cover;
 }
 
-/* ─── Logo ────────────────────────────────────────────────────────────────── */
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-}
-
-.logoIcon {
-  width: 2.5rem;
-  height: 2.5rem;
-  color: var(--color-primary);
-  flex-shrink: 0;
-}
-
-.panel .logoIcon {
-  color: var(--color-white);
-}
-
-.logoText {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: -0.02em;
-}
-
-.panel .logoText {
-  color: var(--color-white);
-}
+/* Logo positioning handled by shared Logo component */
 
 /* ─── Right form side ─────────────────────────────────────────────────────── */
 .formSide {

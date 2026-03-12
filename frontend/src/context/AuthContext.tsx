@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useReducer, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import { authApi } from '../api/auth.api';
-import type { AuthState, LoginCredentials, User } from '../types/auth';
+import { authApi } from '@/api/auth.api';
+import env from '@/config/env';
+import type { AuthState, LoginCredentials, User } from '@/types/auth';
 
 // ─── State & Actions ─────────────────────────────────────────────────────────
 
@@ -55,8 +56,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Restore session on mount
   useEffect(() => {
     const token =
-      localStorage.getItem('medivise_token') ||
-      sessionStorage.getItem('medivise_token');
+      localStorage.getItem(env.TOKEN_KEY) ||
+      sessionStorage.getItem(env.TOKEN_KEY);
 
     if (!token) {
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -69,8 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'RESTORE_SESSION', payload: { user, token } })
       )
       .catch(() => {
-        localStorage.removeItem('medivise_token');
-        sessionStorage.removeItem('medivise_token');
+        localStorage.removeItem(env.TOKEN_KEY);
+        sessionStorage.removeItem(env.TOKEN_KEY);
         dispatch({ type: 'SET_LOADING', payload: false });
       });
   }, []);
@@ -83,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Persist based on "remember me"
     const storage = credentials.rememberMe ? localStorage : sessionStorage;
-    storage.setItem('medivise_token', token);
+    storage.setItem(env.TOKEN_KEY, token);
 
     dispatch({ type: 'LOGIN_SUCCESS', payload: { user, token } });
   }, []);
@@ -92,8 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authApi.logout();
     } finally {
-      localStorage.removeItem('medivise_token');
-      sessionStorage.removeItem('medivise_token');
+      localStorage.removeItem(env.TOKEN_KEY);
+      sessionStorage.removeItem(env.TOKEN_KEY);
       dispatch({ type: 'LOGOUT' });
     }
   }, []);
