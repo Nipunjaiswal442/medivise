@@ -1,29 +1,23 @@
-import axios from 'axios';
-import type { AuthResponse, LoginCredentials, User } from '../types/auth';
-
-const api = axios.create({
-  baseURL: '/api',
-  withCredentials: true,
-});
-
-// Attach token on every request
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('medivise_token') || sessionStorage.getItem('medivise_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+import { apiClient, request } from './client';
+import type { AuthResponse, LoginCredentials, User } from '@/types/auth';
 
 export const authApi = {
-  login: (credentials: Omit<LoginCredentials, 'rememberMe'>): Promise<AuthResponse> =>
-    api.post<AuthResponse>('/auth/login', credentials).then((r) => r.data),
+  login: (credentials: Omit<LoginCredentials, 'rememberMe'>) =>
+    request<AuthResponse>(apiClient, {
+      method: 'POST',
+      url: '/auth/login',
+      data: credentials,
+    }),
 
-  me: (): Promise<{ success: boolean; user: User }> =>
-    api.get('/auth/me').then((r) => r.data),
+  me: () =>
+    request<{ success: boolean; user: User }>(apiClient, {
+      method: 'GET',
+      url: '/auth/me',
+    }),
 
-  logout: (): Promise<{ success: boolean; message: string }> =>
-    api.post('/auth/logout').then((r) => r.data),
+  logout: () =>
+    request<{ success: boolean; message: string }>(apiClient, {
+      method: 'POST',
+      url: '/auth/logout',
+    }),
 };
-
-export default api;

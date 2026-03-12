@@ -1,0 +1,29 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.text {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+/* Light variant for dark backgrounds */
+.light .icon {
+  color: var(--color-white);
+}
+
+.light .text {
+  color: var(--color-white);
+}
