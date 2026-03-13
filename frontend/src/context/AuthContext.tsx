@@ -1,108 +1,153 @@
-import { createContext, useContext, useEffect, useReducer, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import { authApi } from '@/api/auth.api';
-import env from '@/config/env';
-import type { AuthState, LoginCredentials, User } from '@/types/auth';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  updateProfile,
+  type User as FirebaseUser,
+} from 'firebase/auth';
+import { auth } from '@/config/firebase';
+import type { User, LoginCredentials } from '@/types/auth';
 
-// ─── State & Actions ─────────────────────────────────────────────────────────
+// ─── Context value ───────────────────────────────────────────────────────────
 
-type Action =
-  | { type: 'LOGIN_SUCCESS'; payload: { user: User; token: string } }
-  | { type: 'LOGOUT' }
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'RESTORE_SESSION'; payload: { user: User; token: string } };
-
-const initialState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
-  isLoading: true,
-};
-
-function authReducer(state: AuthState, action: Action): AuthState {
-  switch (action.type) {
-    case 'LOGIN_SUCCESS':
-    case 'RESTORE_SESSION':
-      return {
-        ...state,
-        user: action.payload.user,
-        token: action.payload.token,
-        isAuthenticated: true,
-        isLoading: false,
-      };
-    case 'LOGOUT':
-      return { ...initialState, isLoading: false };
-    case 'SET_LOADING':
-      return { ...state, isLoading: action.payload };
-    default:
-      return state;
-  }
-}
-
-// ─── Context ─────────────────────────────────────────────────────────────────
-
-interface AuthContextValue extends AuthState {
+interface AuthContextValue {
+  user: User | null;
+  firebaseUser: FirebaseUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
+  signup: (data: {
+    email: string;
+    password: string;
+    name: string;
+    role: string;
+    specialty: string;
+    licenseNumber: string;
+  }) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/** Convert a Firebase user + stored metadata into our app User type */
+function toAppUser(fbUser: FirebaseUser): User {
+  // Read extra profile data from localStorage (set during signup)
+  const stored = localStorage.getItem(`medivise_profile_${fbUser.uid}`);
+  const extra = stored ? JSON.parse(stored) : {};
+
+  return {
+    id: fbUser.uid,
+    email: fbUser.email ?? '',
+    name: fbUser.displayName ?? extra.name ?? 'Doctor',
+    role: extra.role ?? 'physician',
+    specialty: extra.specialty ?? null,
+    licenseNumber: extra.licenseNumber ?? null,
+  };
+}
+
 // ─── Provider ────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [user, setUser] = useState<User | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Restore session on mount
+  // Listen to Firebase auth state
   useEffect(() => {
-    const token =
-      localStorage.getItem(env.TOKEN_KEY) ||
-      sessionStorage.getItem(env.TOKEN_KEY);
-
-    if (!token) {
-      dispatch({ type: 'SET_LOADING', payload: false });
-      return;
-    }
-
-    authApi
-      .me()
-      .then(({ user }) =>
-        dispatch({ type: 'RESTORE_SESSION', payload: { user, token } })
-      )
-      .catch(() => {
-        localStorage.removeItem(env.TOKEN_KEY);
-        sessionStorage.removeItem(env.TOKEN_KEY);
-        dispatch({ type: 'SET_LOADING', payload: false });
-      });
-  }, []);
-
-  const login = useCallback(async (credentials: LoginCredentials) => {
-    const { token, user } = await authApi.login({
-      email: credentials.email,
-      password: credentials.password,
+    const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
+      if (fbUser) {
+        setFirebaseUser(fbUser);
+        setUser(toAppUser(fbUser));
+      } else {
+        setFirebaseUser(null);
+        setUser(null);
+      }
+      setIsLoading(false);
     });
 
-    // Persist based on "remember me"
-    const storage = credentials.rememberMe ? localStorage : sessionStorage;
-    storage.setItem(env.TOKEN_KEY, token);
-
-    dispatch({ type: 'LOGIN_SUCCESS', payload: { user, token } });
+    return unsubscribe;
   }, []);
 
+  // ── Login ──────────────────────────────────────────────────────────────────
+  const login = useCallback(async (credentials: LoginCredentials) => {
+    const { user: fbUser } = await signInWithEmailAndPassword(
+      auth,
+      credentials.email,
+      credentials.password,
+    );
+    setFirebaseUser(fbUser);
+    setUser(toAppUser(fbUser));
+  }, []);
+
+  // ── Signup ─────────────────────────────────────────────────────────────────
+  const signup = useCallback(
+    async (data: {
+      email: string;
+      password: string;
+      name: string;
+      role: string;
+      specialty: string;
+      licenseNumber: string;
+    }) => {
+      const { user: fbUser } = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+
+      // Set display name on Firebase profile
+      await updateProfile(fbUser, { displayName: data.name });
+
+      // Store extra profile fields in localStorage (keyed by uid)
+      const profileData = {
+        name: data.name,
+        role: data.role,
+        specialty: data.specialty,
+        licenseNumber: data.licenseNumber,
+      };
+      localStorage.setItem(
+        `medivise_profile_${fbUser.uid}`,
+        JSON.stringify(profileData),
+      );
+
+      setFirebaseUser(fbUser);
+      setUser(toAppUser(fbUser));
+    },
+    [],
+  );
+
+  // ── Reset password ─────────────────────────────────────────────────────────
+  const resetPassword = useCallback(async (email: string) => {
+    await sendPasswordResetEmail(auth, email);
+  }, []);
+
+  // ── Logout ─────────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
-    try {
-      await authApi.logout();
-    } catch (err) {
-      console.error('Logout failed on the backend, proceeding to clear local session.', err);
-    } finally {
-      localStorage.removeItem(env.TOKEN_KEY);
-      sessionStorage.removeItem(env.TOKEN_KEY);
-      dispatch({ type: 'LOGOUT' });
-    }
+    await signOut(auth);
+    setFirebaseUser(null);
+    setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        firebaseUser,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        signup,
+        resetPassword,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

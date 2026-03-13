@@ -8,7 +8,7 @@ import {
     AlertCircleIcon,
 } from '@/components/ui/Icons';
 import { InlineSpinner } from '@/components/ui/Spinner';
-import { authApi } from '@/api/auth.api';
+import { useAuth } from '@/context/AuthContext';
 import styles from './SignupPage.module.css';
 
 interface SignupForm {
@@ -55,6 +55,7 @@ const SPECIALTIES = [
 ];
 
 export default function SignupPage() {
+    const { signup } = useAuth();
     const [form, setForm] = useState<SignupForm>({
         name: '',
         email: '',
@@ -109,7 +110,7 @@ export default function SignupPage() {
         setErrors({});
 
         try {
-            await authApi.register({
+            await signup({
                 name: form.name,
                 email: form.email,
                 password: form.password,
@@ -119,9 +120,21 @@ export default function SignupPage() {
             });
             setSuccess(true);
         } catch (err: unknown) {
-            const message =
-                (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-                'Registration failed. Please try again.';
+            const code = (err as { code?: string })?.code ?? '';
+            let message: string;
+            switch (code) {
+                case 'auth/email-already-in-use':
+                    message = 'An account with this email already exists.';
+                    break;
+                case 'auth/weak-password':
+                    message = 'Password is too weak. Use at least 6 characters.';
+                    break;
+                case 'auth/invalid-email':
+                    message = 'Invalid email address.';
+                    break;
+                default:
+                    message = 'Registration failed. Please try again.';
+            }
             setErrors({ general: message });
         } finally {
             setIsSubmitting(false);

@@ -2,10 +2,11 @@ import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailIcon, AlertCircleIcon } from '@/components/ui/Icons';
 import { InlineSpinner } from '@/components/ui/Spinner';
-import { authApi } from '@/api/auth.api';
+import { useAuth } from '@/context/AuthContext';
 import styles from './ForgotPasswordPage.module.css';
 
 export default function ForgotPasswordPage() {
+    const { resetPassword } = useAuth();
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,12 +27,22 @@ export default function ForgotPasswordPage() {
         setError('');
 
         try {
-            await authApi.forgotPassword(email);
+            await resetPassword(email);
             setSent(true);
         } catch (err: unknown) {
-            const message =
-                (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-                'Failed to send reset email. Please try again.';
+            const code = (err as { code?: string })?.code ?? '';
+            let message: string;
+            switch (code) {
+                case 'auth/user-not-found':
+                    // Don't reveal if account exists — just show success
+                    setSent(true);
+                    return;
+                case 'auth/too-many-requests':
+                    message = 'Too many requests. Please try again later.';
+                    break;
+                default:
+                    message = 'Failed to send reset email. Please try again.';
+            }
             setError(message);
         } finally {
             setIsSubmitting(false);

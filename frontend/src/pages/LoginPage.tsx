@@ -77,9 +77,23 @@ export default function LoginPage() {
       await login(form);
       navigate(from, { replace: true });
     } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Unable to sign in. Please check your credentials.';
+      const code = (err as { code?: string })?.code ?? '';
+      let message: string;
+      switch (code) {
+        case 'auth/invalid-credential':
+        case 'auth/wrong-password':
+        case 'auth/user-not-found':
+          message = 'Invalid email or password.';
+          break;
+        case 'auth/too-many-requests':
+          message = 'Too many failed attempts. Please try again later.';
+          break;
+        case 'auth/user-disabled':
+          message = 'This account has been disabled.';
+          break;
+        default:
+          message = 'Unable to sign in. Please check your credentials.';
+      }
       setErrors({ general: message });
     } finally {
       setIsSubmitting(false);
@@ -239,10 +253,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          <p className={styles.demoNote}>
-            <strong>Demo credentials:</strong> dr.smith@medivise.com / Medivise@2024
-          </p>
 
           <p className={styles.signupPrompt}>
             Don't have an account?{' '}
