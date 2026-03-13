@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth.routes');
+const patientRoutes = require('./routes/patient.routes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ const authLimiter = rateLimit({
 
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/patients', patientRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

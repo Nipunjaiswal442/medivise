@@ -66,7 +66,7 @@ export default function ConsultationPage() {
         doSavePatient();
     };
 
-    const doSavePatient = () => {
+    const doSavePatient = async () => {
         if (!patientName.trim()) {
             setSaveMessage('Please enter a patient name before saving.');
             setTimeout(() => setSaveMessage(''), 3000);
@@ -80,24 +80,29 @@ export default function ConsultationPage() {
 
         const today = new Date().toISOString().split('T')[0];
 
-        const newId = savePatient({
-            name: patientName.trim(),
-            age: parseInt(patientAge, 10) || 0,
-            gender: patientGender,
-            condition: condition,
-            lastVisit: today,
-            status: 'active',
-            consultationDuration: elapsed,
-            symptoms: filledSymptoms.map((s) => ({ name: s.name, days: s.days })),
-            prescriptions: prescriptions
-                .filter((p) => p.name.trim())
-                .map((p) => ({ name: p.name, timesPerDay: p.timesPerDay, dosage: p.dosage })),
-            aiReview: aiReview,
-        });
+        try {
+            const newId = await savePatient({
+                name: patientName.trim(),
+                age: parseInt(patientAge, 10) || 0,
+                gender: patientGender,
+                condition: condition,
+                lastVisit: today,
+                status: 'active',
+                consultationDuration: elapsed,
+                symptoms: filledSymptoms.map((s) => ({ name: s.name, days: s.days })),
+                prescriptions: prescriptions
+                    .filter((p) => p.name.trim())
+                    .map((p) => ({ name: p.name, timesPerDay: p.timesPerDay, dosage: p.dosage })),
+                aiReview: aiReview,
+            });
 
-        setPatientId(newId);
-        setSaveMessage('Patient record saved as ' + newId + '!');
-        setTimeout(() => setSaveMessage(''), 4000);
+            setPatientId(newId);
+            setSaveMessage('Patient record saved as ' + newId + '!');
+        } catch (error) {
+            setSaveMessage('Failed to save patient record.');
+        } finally {
+            setTimeout(() => setSaveMessage(''), 4000);
+        }
     };
 
     const updateSymptom = useCallback(
@@ -244,9 +249,6 @@ export default function ConsultationPage() {
                         <PlusCircleIcon size={16} />
                         New Record
                     </button>
-                    <button className={styles.btnSave} onClick={doSavePatient}>
-                        Save Record
-                    </button>
                 </div>
             </div>
 
@@ -392,6 +394,7 @@ export default function ConsultationPage() {
                                     <tr key={row.id}>
                                         <td>
                                             <input
+                                                list="prescription-suggestions"
                                                 className={styles.cellInput}
                                                 placeholder="e.g. Amoxicillin"
                                                 value={row.name}
@@ -439,6 +442,18 @@ export default function ConsultationPage() {
                                 ))}
                             </tbody>
                         </table>
+                        <datalist id="prescription-suggestions">
+                            <option value="Amoxicillin" />
+                            <option value="Ibuprofen" />
+                            <option value="Acetaminophen" />
+                            <option value="Lisinopril" />
+                            <option value="Metformin" />
+                            <option value="Atorvastatin" />
+                            <option value="Omeprazole" />
+                            <option value="Amlodipine" />
+                            <option value="Levothyroxine" />
+                            <option value="Azithromycin" />
+                        </datalist>
                     </div>
                 </div>
 

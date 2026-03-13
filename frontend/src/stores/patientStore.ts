@@ -1,7 +1,4 @@
-/**
- * Shared patient data store backed by localStorage.
- * Used by ConsultationPage (writes) and PatientsPage (reads).
- */
+import { apiClient } from '@/api/client';
 
 export interface ConsultationSymptom {
     name: string;
@@ -15,64 +12,50 @@ export interface ConsultationPrescription {
 }
 
 export interface SavedPatient {
-    id: string;
+    id: string; // our internal UI id
+    customId?: string; // from backend
     name: string;
     age: number;
     gender: string;
     condition: string;
     lastVisit: string;
     status: 'active' | 'discharged' | 'scheduled';
-    consultationDuration: number; // seconds
+    consultationDuration: number;
     symptoms: ConsultationSymptom[];
     prescriptions: ConsultationPrescription[];
     aiReview: string;
-    createdAt: string;
+    createdAt?: string;
 }
 
-const STORAGE_KEY = 'medivise_patients';
-
-/** Read all saved patients from localStorage */
-export function getSavedPatients(): SavedPatient[] {
+export async function getSavedPatients(): Promise<SavedPatient[]> {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return [];
-        return JSON.parse(raw) as SavedPatient[];
-    } catch {
+        const res = await apiClient.get('/api/patients');
+        // Map backend _id/customId to id
+        return res.data.data.map((p: any) => ({
+            ...p,
+            id: p.customId || p._id,
+        }));
+    } catch (err) {
+        console.error('Failed to fetch patients:', err);
         return [];
     }
 }
 
-/** Save a new patient record. Returns the generated ID. */
-export function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'>): string {
-    const existing = getSavedPatients();
-
-    // Generate next ID like P-009, P-010, etc.
-    const maxNum = existing.reduce((max, p) => {
-        const match = p.id.match(/^P-(\d+)$/);
-        return match ? Math.max(max, parseInt(match[1], 10)) : max;
-    }, 8); // start after P-008 (last sample patient)
-
-    const newId = 'P-' + String(maxNum + 1).padStart(3, '0');
-
-    const record: SavedPatient = {
-        ...patient,
-        id: newId,
-        createdAt: new Date().toISOString(),
-    };
-
-    existing.unshift(record); // newest first
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-
-    return newId;
+export async function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'>): Promise<string> {
+    try {
+        const res = await apiClient.post('/api/patients', patient);
+        return res.data.data.customId || res.data.data._id;
+    } catch (err) {
+        console.error('Failed to save patient:', err);
+        throw err;
+    }
 }
 
-/** Delete a patient by ID */
-export function deletePatient(id: string): void {
-    const existing = getSavedPatients().filter((p) => p.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
-}
-
-/** Clear all saved patients */
-export function clearAllPatients(): void {
-    localStorage.removeItem(STORAGE_KEY);
+export async function deletePatient(id: string): Promise<void> {
+    try {
+        await apiClient.delete(`/api/patients/${id}`);
+    } catch (err) {
+        console.error('Failed to delete patient:', err);
+        throw err;
+    }
 }

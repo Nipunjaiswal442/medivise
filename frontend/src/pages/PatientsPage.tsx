@@ -34,24 +34,32 @@ export default function PatientsPage() {
     const [allPatients, setAllPatients] = useState<PatientRecord[]>([]);
     const [selectedPatient, setSelectedPatient] = useState<PatientRecord | null>(null);
 
-    // Load saved patients from localStorage on mount
+    // Load saved patients from backend/localStorage on mount
     useEffect(() => {
-        const saved = getSavedPatients();
-        const savedAsRecords: PatientRecord[] = saved.map((p) => ({
-            id: p.id,
-            name: p.name,
-            age: p.age,
-            gender: p.gender,
-            condition: p.condition,
-            lastVisit: p.lastVisit,
-            status: p.status,
-            isFromConsultation: true,
-            symptoms: p.symptoms,
-            prescriptions: p.prescriptions,
-        }));
-        // Merge: saved patients first (newest), then sample data
-        setAllPatients([...savedAsRecords, ...SAMPLE_PATIENTS]);
-    }, []);
+        const fetchPatients = async () => {
+            const saved = await getSavedPatients();
+            const savedAsRecords: PatientRecord[] = saved.map((p) => ({
+                id: p.id,
+                name: p.name,
+                age: p.age,
+                gender: p.gender,
+                condition: p.condition,
+                lastVisit: p.lastVisit,
+                status: p.status,
+                isFromConsultation: true,
+                symptoms: p.symptoms,
+                prescriptions: p.prescriptions,
+            }));
+            // Merge: saved patients first (newest), then sample data
+            setAllPatients([...savedAsRecords, ...SAMPLE_PATIENTS]);
+
+            // If they searched already, update results as well
+            if (!query.trim()) {
+                setResults([...savedAsRecords, ...SAMPLE_PATIENTS]);
+            }
+        };
+        fetchPatients();
+    }, [query]);
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
