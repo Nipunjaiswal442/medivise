@@ -10,6 +10,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import ChatPage from '@/pages/ChatPage';
 import SettingsPage from '@/pages/SettingsPage';
 import PatientsPage from '@/pages/PatientsPage';
+import NewsPage from '@/pages/NewsPage';
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/patients" element={<PatientsPage />} />
+              <Route path="/news" element={<NewsPage />} />
             </Route>
 
             {/* Fallback */}
