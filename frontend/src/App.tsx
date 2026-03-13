@@ -10,6 +10,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import ChatPage from '@/pages/ChatPage';
 import SettingsPage from '@/pages/SettingsPage';
 import PatientsPage from '@/pages/PatientsPage';
+import ConsultationPage from '@/pages/ConsultationPage';
 import NewsPage from '@/pages/NewsPage';
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/patients" element={<PatientsPage />} />
+              <Route path="/consultation" element={<ConsultationPage />} />
               <Route path="/news" element={<NewsPage />} />
             </Route>
 
@@ -46,4 +48,3 @@ export default function App() {
     </ErrorBoundary>
   );
 }
-

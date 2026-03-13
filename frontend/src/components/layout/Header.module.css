@@ -10,6 +10,23 @@
   flex-shrink: 0;
 }
 
+.menuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-gray-600);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.menuBtn:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+}
+
 .spacer {
   flex: 1;
 }

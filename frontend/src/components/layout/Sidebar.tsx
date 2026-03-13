@@ -4,6 +4,7 @@ import {
   LayoutDashboardIcon,
   MessageSquareIcon,
   UsersIcon,
+  StethoscopeIcon,
   NewspaperIcon,
   SettingsIcon,
 } from '@/components/ui/Icons';
@@ -13,15 +14,20 @@ const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboardIcon },
   { to: '/chat', label: 'AI Assistant', icon: MessageSquareIcon },
   { to: '/patients', label: 'Patients', icon: UsersIcon },
+  { to: '/consultation', label: 'Start Consultation', icon: StethoscopeIcon },
   { to: '/news', label: 'Medical News', icon: NewspaperIcon },
   { to: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  collapsed: boolean;
+}
+
+export default function Sidebar({ collapsed }: SidebarProps) {
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.logoArea}>
-        <Logo />
+        {!collapsed && <Logo />}
       </div>
 
       <nav className={styles.nav}>
@@ -32,15 +38,16 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `${styles.navItem} ${isActive ? styles.active : ''}`
             }
+            title={collapsed ? label : undefined}
           >
             <IconComponent size={18} />
-            <span>{label}</span>
+            {!collapsed && <span>{label}</span>}
           </NavLink>
         ))}
       </nav>
 
       <div className={styles.footer}>
-        <p className={styles.footerText}>Medivise v1.0</p>
+        {!collapsed && <p className={styles.footerText}>Medivise v1.0</p>}
       </div>
     </aside>
   );

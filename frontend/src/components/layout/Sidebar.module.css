@@ -5,6 +5,12 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  transition: width var(--transition-base);
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 64px;
 }
 
 @media (max-width: 768px) {
@@ -16,6 +22,14 @@
 .logoArea {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--color-gray-100);
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+}
+
+.collapsed .logoArea {
+  padding: 1.25rem 0.75rem;
+  justify-content: center;
 }
 
 .nav {
@@ -37,6 +51,16 @@
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.collapsed .navItem {
+  justify-content: center;
+  padding: 0.625rem;
+}
+
+.collapsed .navItem span {
+  display: none;
 }
 
 .navItem:hover {
@@ -53,6 +77,10 @@
 .footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--color-gray-100);
+}
+
+.collapsed .footer {
+  padding: 1rem 0.5rem;
 }
 
 .footerText {
