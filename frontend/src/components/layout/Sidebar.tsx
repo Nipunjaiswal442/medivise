@@ -4,6 +4,7 @@ import {
   LayoutDashboardIcon,
   MessageSquareIcon,
   UsersIcon,
+  NewspaperIcon,
   SettingsIcon,
 } from '@/components/ui/Icons';
 import styles from './Sidebar.module.css';
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboardIcon },
   { to: '/chat', label: 'AI Assistant', icon: MessageSquareIcon },
   { to: '/patients', label: 'Patients', icon: UsersIcon },
+  { to: '/news', label: 'Medical News', icon: NewspaperIcon },
   { to: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
