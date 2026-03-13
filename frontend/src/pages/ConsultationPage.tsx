@@ -6,6 +6,7 @@ import {
     TrashIcon,
     SparklesIcon,
 } from '@/components/ui/Icons';
+import { savePatient } from '@/stores/patientStore';
 import styles from './ConsultationPage.module.css';
 
 interface SymptomRow {
@@ -36,6 +37,8 @@ export default function ConsultationPage() {
     const [running, setRunning] = useState(false);
     const [patientName, setPatientName] = useState('');
     const [patientId, setPatientId] = useState('');
+    const [patientAge, setPatientAge] = useState('');
+    const [patientGender, setPatientGender] = useState('Male');
 
     const [symptoms, setSymptoms] = useState<SymptomRow[]>([
         { id: nextId(), name: '', days: '' },
@@ -47,6 +50,7 @@ export default function ConsultationPage() {
 
     const [aiReview, setAiReview] = useState('');
     const [aiLoading, setAiLoading] = useState(false);
+    const [saveMessage, setSaveMessage] = useState('');
 
     useEffect(() => {
         if (!running) return;
@@ -55,7 +59,46 @@ export default function ConsultationPage() {
     }, [running]);
 
     const startTimer = () => setRunning(true);
-    const stopTimer = () => setRunning(false);
+
+    // Save patient data & stop timer
+    const stopTimer = () => {
+        setRunning(false);
+        doSavePatient();
+    };
+
+    const doSavePatient = () => {
+        if (!patientName.trim()) {
+            setSaveMessage('Please enter a patient name before saving.');
+            setTimeout(() => setSaveMessage(''), 3000);
+            return;
+        }
+
+        const filledSymptoms = symptoms.filter((s) => s.name.trim());
+        const condition = filledSymptoms.length > 0
+            ? filledSymptoms.map((s) => s.name.trim()).join(', ')
+            : 'General Consultation';
+
+        const today = new Date().toISOString().split('T')[0];
+
+        const newId = savePatient({
+            name: patientName.trim(),
+            age: parseInt(patientAge, 10) || 0,
+            gender: patientGender,
+            condition: condition,
+            lastVisit: today,
+            status: 'active',
+            consultationDuration: elapsed,
+            symptoms: filledSymptoms.map((s) => ({ name: s.name, days: s.days })),
+            prescriptions: prescriptions
+                .filter((p) => p.name.trim())
+                .map((p) => ({ name: p.name, timesPerDay: p.timesPerDay, dosage: p.dosage })),
+            aiReview: aiReview,
+        });
+
+        setPatientId(newId);
+        setSaveMessage('Patient record saved as ' + newId + '!');
+        setTimeout(() => setSaveMessage(''), 4000);
+    };
 
     const updateSymptom = useCallback(
         (id: string, field: keyof SymptomRow, value: string) => {
@@ -95,17 +138,21 @@ export default function ConsultationPage() {
     const handleNewPatient = () => {
         setPatientName('');
         setPatientId('');
+        setPatientAge('');
+        setPatientGender('Male');
         setSymptoms([{ id: nextId(), name: '', days: '' }]);
         setPrescriptions([{ id: nextId(), name: '', timesPerDay: '', dosage: '' }]);
         setAiReview('');
         setElapsed(0);
         setRunning(false);
+        setSaveMessage('');
     };
 
     const handleNewRecord = () => {
         setSymptoms([{ id: nextId(), name: '', days: '' }]);
         setPrescriptions([{ id: nextId(), name: '', timesPerDay: '', dosage: '' }]);
         setAiReview('');
+        setSaveMessage('');
     };
 
     const generateAiReview = () => {
@@ -161,6 +208,13 @@ export default function ConsultationPage() {
 
     return (
         <>
+            {/* Save message toast */}
+            {saveMessage && (
+                <div className={saveMessage.includes('saved') ? styles.toastSuccess : styles.toastError}>
+                    {saveMessage}
+                </div>
+            )}
+
             <div className={styles.topBar}>
                 <div className={styles.timerSection}>
                     <div className={styles.dutyBadge}>
@@ -190,6 +244,9 @@ export default function ConsultationPage() {
                         <PlusCircleIcon size={16} />
                         New Record
                     </button>
+                    <button className={styles.btnSave} onClick={doSavePatient}>
+                        Save Record
+                    </button>
                 </div>
             </div>
 
@@ -212,7 +269,7 @@ export default function ConsultationPage() {
                             <input
                                 className={styles.input}
                                 type="text"
-                                placeholder="Enter patient ID"
+                                placeholder="Auto-generated on save"
                                 value={patientId}
                                 onChange={(e) => setPatientId(e.target.value)}
                             />
@@ -225,6 +282,30 @@ export default function ConsultationPage() {
                                 Facial Recognition
                             </button>
                         </div>
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.fieldLabel}>Age</label>
+                        <input
+                            className={styles.input}
+                            type="number"
+                            placeholder="e.g. 35"
+                            min={0}
+                            max={150}
+                            value={patientAge}
+                            onChange={(e) => setPatientAge(e.target.value)}
+                        />
+                    </div>
+                    <div className={styles.fieldGroup}>
+                        <label className={styles.fieldLabel}>Gender</label>
+                        <select
+                            className={styles.input}
+                            value={patientGender}
+                            onChange={(e) => setPatientGender(e.target.value)}
+                        >
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                 </div>
             </div>

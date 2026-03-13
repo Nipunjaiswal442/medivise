@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
+import { getSavedPatients, type SavedPatient } from '@/stores/patientStore';
 import styles from './PatientsPage.module.css';
 
 interface PatientRecord {
@@ -9,6 +10,9 @@ interface PatientRecord {
     condition: string;
     lastVisit: string;
     status: 'active' | 'discharged' | 'scheduled';
+    isFromConsultation?: boolean;
+    symptoms?: SavedPatient['symptoms'];
+    prescriptions?: SavedPatient['prescriptions'];
 }
 
 // Sample patient data
@@ -27,20 +31,41 @@ export default function PatientsPage() {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<PatientRecord[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
+    const [allPatients, setAllPatients] = useState<PatientRecord[]>([]);
+    const [selectedPatient, setSelectedPatient] = useState<PatientRecord | null>(null);
+
+    // Load saved patients from localStorage on mount
+    useEffect(() => {
+        const saved = getSavedPatients();
+        const savedAsRecords: PatientRecord[] = saved.map((p) => ({
+            id: p.id,
+            name: p.name,
+            age: p.age,
+            gender: p.gender,
+            condition: p.condition,
+            lastVisit: p.lastVisit,
+            status: p.status,
+            isFromConsultation: true,
+            symptoms: p.symptoms,
+            prescriptions: p.prescriptions,
+        }));
+        // Merge: saved patients first (newest), then sample data
+        setAllPatients([...savedAsRecords, ...SAMPLE_PATIENTS]);
+    }, []);
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
         const q = query.trim().toLowerCase();
         if (!q) {
-            setResults(SAMPLE_PATIENTS);
+            setResults(allPatients);
         } else {
             setResults(
-                SAMPLE_PATIENTS.filter(
+                allPatients.filter(
                     (p) =>
                         p.name.toLowerCase().includes(q) ||
                         p.id.toLowerCase().includes(q) ||
-                        p.condition.toLowerCase().includes(q)
-                )
+                        p.condition.toLowerCase().includes(q),
+                ),
             );
         }
         setHasSearched(true);
@@ -51,6 +76,7 @@ export default function PatientsPage() {
         if (value.trim() === '') {
             setHasSearched(false);
             setResults([]);
+            setSelectedPatient(null);
         }
     };
 
@@ -102,7 +128,7 @@ export default function PatientsPage() {
                         <button
                             type="button"
                             className={styles.clearBtn}
-                            onClick={() => { setQuery(''); setHasSearched(false); setResults([]); }}
+                            onClick={() => { setQuery(''); setHasSearched(false); setResults([]); setSelectedPatient(null); }}
                             aria-label="Clear search"
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -129,6 +155,7 @@ export default function PatientsPage() {
                     <h3 className={styles.emptyTitle}>Search for a patient</h3>
                     <p className={styles.emptyHint}>
                         Enter a patient's name, ID (e.g. P-001), or medical condition to find their records.
+                        Patients from consultations are automatically saved here.
                     </p>
                 </div>
             )}
@@ -164,20 +191,70 @@ export default function PatientsPage() {
                             <span>Status</span>
                         </div>
                         {results.map((patient) => (
-                            <div key={patient.id} className={styles.tableRow}>
-                                <span className={styles.cellId}>{patient.id}</span>
+                            <div
+                                key={patient.id}
+                                className={styles.tableRow + (patient.isFromConsultation ? ' ' + styles.consultationRow : '') + (selectedPatient?.id === patient.id ? ' ' + styles.selectedRow : '')}
+                                onClick={() => setSelectedPatient(selectedPatient?.id === patient.id ? null : patient)}
+                                style={{ cursor: patient.isFromConsultation ? 'pointer' : 'default' }}
+                            >
+                                <span className={styles.cellId}>
+                                    {patient.id}
+                                    {patient.isFromConsultation && <span className={styles.newBadge}>NEW</span>}
+                                </span>
                                 <span className={styles.cellName}>{patient.name}</span>
                                 <span className={styles.cellMeta}>{patient.age} / {patient.gender}</span>
                                 <span className={styles.cellCondition}>{patient.condition}</span>
                                 <span className={styles.cellDate}>{patient.lastVisit}</span>
                                 <span>
-                                    <span className={`${styles.statusBadge} ${getStatusClass(patient.status)}`}>
+                                    <span className={styles.statusBadge + ' ' + getStatusClass(patient.status)}>
                                         {patient.status.charAt(0).toUpperCase() + patient.status.slice(1)}
                                     </span>
                                 </span>
                             </div>
                         ))}
                     </div>
+
+                    {/* Detail panel for consultation patients */}
+                    {selectedPatient && selectedPatient.isFromConsultation && (
+                        <div className={styles.detailPanel}>
+                            <h3 className={styles.detailTitle}>
+                                Consultation Details — {selectedPatient.name} ({selectedPatient.id})
+                            </h3>
+                            <div className={styles.detailGrid}>
+                                <div className={styles.detailCard}>
+                                    <h4>Symptoms</h4>
+                                    {selectedPatient.symptoms && selectedPatient.symptoms.length > 0 ? (
+                                        <ul className={styles.detailList}>
+                                            {selectedPatient.symptoms.map((s, i) => (
+                                                <li key={i}>
+                                                    <strong>{s.name}</strong>
+                                                    {s.days && <span> — {s.days} day{s.days !== '1' ? 's' : ''}</span>}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className={styles.detailEmpty}>No symptoms recorded</p>
+                                    )}
+                                </div>
+                                <div className={styles.detailCard}>
+                                    <h4>Prescriptions</h4>
+                                    {selectedPatient.prescriptions && selectedPatient.prescriptions.length > 0 ? (
+                                        <ul className={styles.detailList}>
+                                            {selectedPatient.prescriptions.map((p, i) => (
+                                                <li key={i}>
+                                                    <strong>{p.name}</strong>
+                                                    {p.dosage && <span> — {p.dosage}</span>}
+                                                    {p.timesPerDay && <span>, {p.timesPerDay}x/day</span>}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className={styles.detailEmpty}>No prescriptions recorded</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
