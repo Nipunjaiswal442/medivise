@@ -1,10 +1,5 @@
-import { convex } from "@/convex/client";
-
-const callQuery = (path: string, args: any) =>
-  convex.query(path as any, args);
-
-const callMutation = (path: string, args: any) =>
-  convex.mutation(path as any, args);
+import { getConvex } from '@/convex/client';
+import { fn } from '@/convex/functions';
 
 export interface ConsultationSymptom {
     name: string;
@@ -35,8 +30,8 @@ export interface SavedPatient {
 
 export async function getSavedPatients(): Promise<SavedPatient[]> {
     try {
-        const patients = await callQuery("functions/patients.getPatients", {});
-        return patients.map((p: any) => ({
+        const patients = await getConvex().query(fn.getPatients, {});
+        return patients.map((p) => ({
             id: p._id,
             customId: p.customId,
             name: p.name,
@@ -46,10 +41,10 @@ export async function getSavedPatients(): Promise<SavedPatient[]> {
             lastVisit: p.lastVisit,
             status: p.status,
             consultationDuration: p.consultationDuration,
-            symptoms: p.symptoms || [],
-            prescriptions: p.prescriptions || [],
-            aiReview: p.aiReview || "",
-            createdAt: new Date(p.createdAt || 0).toISOString(),
+            symptoms: p.symptoms,
+            prescriptions: p.prescriptions,
+            aiReview: p.aiReview ?? '',
+            createdAt: new Date(p._creationTime).toISOString(),
         }));
     } catch (err) {
         console.error('Failed to fetch patients:', err);
@@ -57,9 +52,10 @@ export async function getSavedPatients(): Promise<SavedPatient[]> {
     }
 }
 
+/** Saves a patient and returns its display ID (P-001, P-002, ...). */
 export async function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'>): Promise<string> {
     try {
-        const res: any = await callMutation("functions/patients.createPatient", {
+        const { customId } = await getConvex().mutation(fn.createPatient, {
             name: patient.name,
             age: patient.age,
             gender: patient.gender,
@@ -71,7 +67,7 @@ export async function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'
             prescriptions: patient.prescriptions,
             aiReview: patient.aiReview,
         });
-        return res._id;
+        return customId;
     } catch (err) {
         console.error('Failed to save patient:', err);
         throw err;
@@ -80,7 +76,7 @@ export async function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'
 
 export async function deletePatient(id: string): Promise<void> {
     try {
-        await callMutation("functions/patients.deletePatient", { id });
+        await getConvex().mutation(fn.deletePatient, { id });
     } catch (err) {
         console.error('Failed to delete patient:', err);
         throw err;

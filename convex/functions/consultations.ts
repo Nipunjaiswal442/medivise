@@ -1,23 +1,14 @@
-import { query, mutation } from "convex/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
+import { mutation, query } from "../_generated/server";
+import { requireUser } from "../lib/auth";
 
 export const getConsultations = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Unauthenticated");
-    }
-    const user = await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("firebaseUid"), identity.subject))
-      .unique();
-    if (!user) {
-      throw new Error("User not found");
-    }
+    const user = await requireUser(ctx);
     return await ctx.db
       .query("consultations")
-      .filter((q) => q.eq(q.field("userId"), user._id))
+      .withIndex("userId", (q) => q.eq("userId", user._id))
       .order("desc")
       .collect();
   },
@@ -28,22 +19,22 @@ export const createConsultation = mutation({
     patientId: v.id("patients"),
     symptoms: v.array(v.object({ name: v.string(), days: v.string() })),
     prescriptions: v.array(
-      v.object({ name: v.string(), timesPerDay: v.string(), dosage: v.string() })
+      v.object({ name: v.string(), timesPerDay: v.string(), dosage: v.string() }),
     ),
     aiReview: v.optional(v.string()),
     predictionId: v.optional(v.id("predictions")),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Unauthenticated");
+    const user = await requireUser(ctx);
+    const patient = await ctx.db.get(args.patientId);
+    if (!patient || patient.userId !== user._id) {
+      throw new ConvexError("Patient not found");
     }
-    const user = await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("firebaseUid"), identity.subject))
-      .unique();
-    if (!user) {
-      throw new Error("User not found");
+    if (args.predictionId) {
+      const prediction = await ctx.db.get(args.predictionId);
+      if (!prediction || prediction.userId !== user._id) {
+        throw new ConvexError("Prediction not found");
+      }
     }
     const now = Date.now();
     return await ctx.db.insert("consultations", {
@@ -61,7 +52,19 @@ export const linkPredictionToConsultation = mutation({
     predictionId: v.id("predictions"),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.consultationId, { predictionId: args.predictionId });
+    const user = await requireUser(ctx);
+    const consultation = await ctx.db.get(args.consultationId);
+    const prediction = await ctx.db.get(args.predictionId);
+    if (!consultation || consultation.userId !== user._id) {
+      throw new ConvexError("Consultation not found");
+    }
+    if (!prediction || prediction.userId !== user._id) {
+      throw new ConvexError("Prediction not found");
+    }
+    await ctx.db.patch(args.consultationId, {
+      predictionId: args.predictionId,
+      updatedAt: Date.now(),
+    });
     return { success: true };
   },
 });

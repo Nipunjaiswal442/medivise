@@ -9,7 +9,8 @@ import {
     PillIcon,
 } from '@/components/ui/Icons';
 import { savePatient } from '@/stores/patientStore';
-import { healthService, type HealthPredictionRequest } from '@/services/health.service';
+import { healthService, type HealthPredictionRequest, type PredictionResult } from '@/services/health.service';
+import { errorMessage } from '@/convex/client';
 import styles from './ConsultationPage.module.css';
 
 interface SymptomRow {
@@ -54,7 +55,7 @@ export default function ConsultationPage() {
     const [aiReview, setAiReview] = useState('');
     const [aiLoading, setAiLoading] = useState(false);
     const [saveMessage, setSaveMessage] = useState('');
-    const [predictionResult, setPredictionResult] = useState<any>(null);
+    const [predictionResult, setPredictionResult] = useState<PredictionResult | null>(null);
     const [predictionLoading, setPredictionLoading] = useState(false);
 
     useEffect(() => {
@@ -233,15 +234,14 @@ export default function ConsultationPage() {
 
         try {
             const request: HealthPredictionRequest = {
-                patientId: patientId || 'temp-' + Date.now(),
                 symptoms: filledSymptoms.map((s) => s.name.trim()),
                 age: ageNum,
                 gender: patientGender,
             };
             const res = await healthService.predictHealth(request);
             setPredictionResult(res);
-        } catch (err: any) {
-            alert('Health prediction failed: ' + (err.message || 'Unknown error'));
+        } catch (err) {
+            alert('Health prediction failed: ' + errorMessage(err));
         } finally {
             setPredictionLoading(false);
         }
@@ -532,6 +532,11 @@ export default function ConsultationPage() {
                         <h3 className={styles.predictionResultsTitle}>AI Health Prediction</h3>
                         <PillIcon size={20} className={styles.predictionIcon} />
                     </div>
+                    {predictionResult.unmatchedSymptoms.length > 0 && (
+                        <p className={styles.predictionMedicinesHint}>
+                            Not recognised, so ignored: {predictionResult.unmatchedSymptoms.join(', ')}
+                        </p>
+                    )}
                     <div className={styles.predictionResultsGrid}>
                         <div className={styles.predictionResultCard}>
                             <span className={styles.predictionDiseaseName}>{predictionResult.disease.name}</span>
@@ -550,7 +555,7 @@ export default function ConsultationPage() {
                             Confidence indicates how commonly each medicine is used for this condition.
                         </p>
                         <div className={styles.predictionMedicineList}>
-                            {predictionResult.medicines.map((med: any, i: number) => (
+                            {predictionResult.medicines.map((med, i) => (
                                 <div key={i} className={styles.predictionMedicineItem}>
                                     <span className={styles.predictionMedicineName}>{med.name}</span>
                                     <span className={styles.predictionMedicineConfidence} style={{ backgroundColor: confidenceColor(med.confidence) }}>
@@ -578,8 +583,9 @@ export default function ConsultationPage() {
                     <div className={styles.predictionDisclaimer}>
                         <AlertTriangleIcon size={14} />
                         <span>
-                            AI-generated prediction for informational purposes only. Not a substitute for
-                            professional medical advice.
+                            Symptom-match scores from a demonstration knowledge base, not calibrated
+                            probabilities and not a diagnosis. Not a substitute for professional medical
+                            advice; a clinician must verify every suggestion.
                         </span>
                     </div>
                 </div>

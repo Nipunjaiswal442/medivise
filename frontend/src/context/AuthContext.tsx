@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import {
   onAuthStateChanged,
@@ -10,6 +10,13 @@ import {
   type User as FirebaseUser,
 } from 'firebase/auth';
 import { auth } from '@/config/firebase';
+import {
+  authenticateConvex,
+  clearConvexAuth,
+  convexConfigured,
+  getConvex,
+} from '@/convex/client';
+import { fn } from '@/convex/functions';
 import type { User, LoginCredentials } from '@/types/auth';
 
 // ─── Context value ───────────────────────────────────────────────────────────
@@ -52,39 +59,98 @@ function toAppUser(fbUser: FirebaseUser): User {
   };
 }
 
+/**
+ * Signs the Convex client in with the Firebase user's ID token, creates/updates the clinician's
+ * profile on the backend, and returns the profile the backend holds (it is the source of truth for
+ * the role). If the backend is unconfigured or unreachable the Firebase-derived user is returned,
+ * so the rest of the app keeps working; backend-backed pages then report their own errors.
+ */
+async function syncWithBackend(fbUser: FirebaseUser, appUser: User): Promise<User> {
+  if (!convexConfigured) {
+    console.warn('VITE_CONVEX_URL is not set: patients and predictions are unavailable.');
+    return appUser;
+  }
+  try {
+    const accepted = await authenticateConvex((force) => fbUser.getIdToken(force));
+    if (!accepted) {
+      throw new Error(
+        'The backend rejected the sign-in token. Check convex/auth.config.ts and the Firebase project id.',
+      );
+    }
+    const convex = getConvex();
+    await convex.mutation(fn.upsertCurrentUser, {
+      name: appUser.name,
+      role: appUser.role,
+      specialty: appUser.specialty ?? undefined,
+      licenseNumber: appUser.licenseNumber ?? undefined,
+    });
+    const profile = await convex.query(fn.getCurrentUser, {});
+    return profile
+      ? {
+          ...appUser,
+          name: profile.name,
+          role: profile.role,
+          specialty: profile.specialty ?? null,
+          licenseNumber: profile.licenseNumber ?? null,
+        }
+      : appUser;
+  } catch (err) {
+    console.error('Backend sign-in failed:', err);
+    return appUser;
+  }
+}
+
 // ─── Provider ────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  // login()/signup() activate the user themselves; the auth-state listener must not race them.
+  const activatingManually = useRef(false);
 
-  // Listen to Firebase auth state
+  const activate = useCallback(async (fbUser: FirebaseUser) => {
+    setFirebaseUser(fbUser);
+    setUser(await syncWithBackend(fbUser, toAppUser(fbUser)));
+  }, []);
+
+  // Restore the session and follow sign-in/out; stay "loading" until the backend is signed in too
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
+    let cancelled = false;
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      if (activatingManually.current) return;
       if (fbUser) {
-        setFirebaseUser(fbUser);
-        setUser(toAppUser(fbUser));
+        await activate(fbUser);
       } else {
+        clearConvexAuth();
         setFirebaseUser(null);
         setUser(null);
       }
-      setIsLoading(false);
+      if (!cancelled) setIsLoading(false);
     });
-
-    return unsubscribe;
-  }, []);
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, [activate]);
 
   // ── Login ──────────────────────────────────────────────────────────────────
-  const login = useCallback(async (credentials: LoginCredentials) => {
-    const { user: fbUser } = await signInWithEmailAndPassword(
-      auth,
-      credentials.email,
-      credentials.password,
-    );
-    setFirebaseUser(fbUser);
-    setUser(toAppUser(fbUser));
-  }, []);
+  const login = useCallback(
+    async (credentials: LoginCredentials) => {
+      activatingManually.current = true;
+      try {
+        const { user: fbUser } = await signInWithEmailAndPassword(
+          auth,
+          credentials.email,
+          credentials.password,
+        );
+        await activate(fbUser);
+      } finally {
+        activatingManually.current = false;
+      }
+    },
+    [activate],
+  );
 
   // ── Signup ─────────────────────────────────────────────────────────────────
   const signup = useCallback(
@@ -96,31 +162,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       specialty: string;
       licenseNumber: string;
     }) => {
-      const { user: fbUser } = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
+      activatingManually.current = true;
+      try {
+        const { user: fbUser } = await createUserWithEmailAndPassword(
+          auth,
+          data.email,
+          data.password,
+        );
 
-      // Set display name on Firebase profile
-      await updateProfile(fbUser, { displayName: data.name });
+        // Set display name on Firebase profile
+        await updateProfile(fbUser, { displayName: data.name });
 
-      // Store extra profile fields in localStorage (keyed by uid)
-      const profileData = {
-        name: data.name,
-        role: data.role,
-        specialty: data.specialty,
-        licenseNumber: data.licenseNumber,
-      };
-      localStorage.setItem(
-        `medivise_profile_${fbUser.uid}`,
-        JSON.stringify(profileData),
-      );
+        // Keep the chosen role/specialty/licence locally; the backend profile is created from them
+        const profileData = {
+          name: data.name,
+          role: data.role,
+          specialty: data.specialty,
+          licenseNumber: data.licenseNumber,
+        };
+        localStorage.setItem(
+          `medivise_profile_${fbUser.uid}`,
+          JSON.stringify(profileData),
+        );
 
-      setFirebaseUser(fbUser);
-      setUser(toAppUser(fbUser));
+        await activate(fbUser);
+      } finally {
+        activatingManually.current = false;
+      }
     },
-    [],
+    [activate],
   );
 
   // ── Reset password ─────────────────────────────────────────────────────────
@@ -130,6 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // ── Logout ─────────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
+    clearConvexAuth();
     await signOut(auth);
     setFirebaseUser(null);
     setUser(null);

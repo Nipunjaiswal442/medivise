@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { healthService, type HealthPredictionRequest, type PredictionResult } from "@/services/health.service";
+import { errorMessage } from "@/convex/client";
 import { SparklesIcon, StethoscopeIcon, AlertTriangleIcon } from "@/components/ui/Icons";
 import styles from "./PredictionPage.module.css";
 
@@ -68,15 +69,14 @@ export default function PredictionPage() {
 
     try {
       const request: HealthPredictionRequest = {
-        patientId: "temp-" + Date.now(),
         symptoms: filledSymptoms,
         age: ageNum,
         gender,
       };
       const res = await healthService.predictHealth(request);
       setResult(res);
-    } catch (err: any) {
-      setError(err.message || "Prediction failed. Please try again.");
+    } catch (err) {
+      setError(errorMessage(err, "Prediction failed. Please try again."));
     } finally {
       setIsLoading(false);
     }
@@ -230,6 +230,12 @@ export default function PredictionPage() {
             </p>
           </div>
 
+          {result.unmatchedSymptoms.length > 0 && (
+            <p className={styles.confidenceText}>
+              Not recognised, so ignored: {result.unmatchedSymptoms.join(", ")}
+            </p>
+          )}
+
           <div className={styles.primaryPrediction}>
             <div className={styles.diseaseBadge}>
               <span className={styles.diseaseName}>{result.disease.name}</span>
@@ -306,10 +312,12 @@ export default function PredictionPage() {
           <div className={styles.medicalDisclaimer}>
             <AlertTriangleIcon size={16} />
             <p>
-              <strong>Medical Disclaimer:</strong> This AI-generated prediction
-              is for informational purposes only and is not a substitute for
-              professional medical advice, diagnosis, or treatment. Always
-              consult a qualified healthcare provider for medical decisions.
+              <strong>Medical Disclaimer:</strong> Scores are symptom-match
+              estimates from a demonstration knowledge base, not calibrated
+              probabilities, and age and gender are not yet used. This is not a
+              diagnosis and is no substitute for professional medical advice,
+              diagnosis, or treatment. A qualified clinician must verify every
+              suggestion.
             </p>
           </div>
         </div>

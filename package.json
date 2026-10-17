@@ -1,0 +1,25 @@
+{
+  "name": "medivise",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Medivise — Convex backend, ML service and React frontend",
+  "scripts": {
+    "convex:dev": "convex dev",
+    "convex:deploy": "convex deploy",
+    "seed": "convex run functions/seed:seedDatabase",
+    "export:ml": "tsx scripts/export-knowledge.ts",
+    "typecheck": "tsc -p convex --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "convex": "^1.47.0"
+  },
+  "devDependencies": {
+    "@edge-runtime/vm": "^5.0.0",
+    "@types/node": "^22.20.5",
+    "convex-test": "^0.0.38",
+    "tsx": "^4.19.0",
+    "typescript": "^5.2.2",
+    "vitest": "^3.0.0"
+  }
+}

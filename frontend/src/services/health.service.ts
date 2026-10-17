@@ -1,27 +1,16 @@
-import { convex } from "@/convex/client";
-import type { HealthPredictionRequest, PredictionResult } from "@/types/health";
+import { getConvex } from '@/convex/client';
+import { fn } from '@/convex/functions';
+import type { HealthPredictionRequest, PredictionRecord, PredictionResult } from '@/types/health';
 
-export type { HealthPredictionRequest, PredictionResult };
-
-const callMutation = (path: string, args: any) =>
-  convex.mutation(path as any, args);
-
-const callQuery = (path: string, args: any) =>
-  convex.query(path as any, args);
+export type { HealthPredictionRequest, PredictionRecord, PredictionResult };
 
 export const healthService = {
-  predictHealth: async (request: HealthPredictionRequest): Promise<PredictionResult> => {
-    const result = await callMutation("functions/predict.predictHealth", {
-      patientId: request.patientId,
+  predictHealth: (request: HealthPredictionRequest): Promise<PredictionResult> =>
+    getConvex().action(fn.predictHealth, {
       symptoms: request.symptoms,
       age: request.age,
       gender: request.gender,
-    });
-    return result as PredictionResult;
-  },
+    }),
 
-  getPredictions: async (): Promise<PredictionResult[]> => {
-    const result = await callQuery("functions/predict.getPredictions", {});
-    return result as PredictionResult[];
-  },
+  getPredictions: (): Promise<PredictionRecord[]> => getConvex().query(fn.getPredictions, {}),
 };

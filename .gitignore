@@ -4,3 +4,14 @@ dist/
 *.log
 .DS_Store
 .node/
+
+# Convex local config (written by `npx convex dev`)
+.env.local
+.env*.local
+
+# Python / ML
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+ml/model/

@@ -95,11 +95,15 @@ export default defineSchema({
     .index("medicineId", ["medicineId"]),
 
   predictions: defineTable({
-    patientId: v.id("patients"),
+    // Optional: a prediction can be run before the patient has been saved.
+    patientId: v.optional(v.id("patients")),
     userId: v.id("users"),
     diseaseId: v.id("diseases"),
     confidence: v.number(),
     symptoms: v.array(v.string()),
+    unmatchedSymptoms: v.optional(v.array(v.string())),
+    // "ml-service" when the Python service answered, "knowledge-base" for the built-in scorer.
+    source: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

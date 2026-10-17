@@ -1,7 +1,3 @@
-import { diseases } from "./diseases";
-import { symptoms } from "./symptoms";
-import { medicines } from "./medicines";
-
 export const diseaseSymptomMappings = [
   // Common Cold
   { disease: "Common Cold", symptom: "Cough", weight: 0.8 },
@@ -841,22 +837,3 @@ export const diseaseMedicineMappings = [
   { disease: "Hepatitis C", medicine: "Ledipasvir", confidence: 80 },
   { disease: "Hepatitis C", medicine: "Velpatasvir", confidence: 80 },
 ];
-
-// Helper: build lookup maps from names to IDs after insertion
-export function buildMappings(
-  diseaseMap: Record<string, string>,
-  symptomMap: Record<string, string>,
-  medicineMap: Record<string, string>
-) {
-  const symptomLinks = diseaseSymptomMappings.map((m) => ({
-    diseaseId: diseaseMap[m.disease],
-    symptomId: symptomMap[m.symptom],
-    weight: m.weight,
-  }));
-  const medicineLinks = diseaseMedicineMappings.map((m) => ({
-    diseaseId: diseaseMap[m.disease],
-    medicineId: medicineMap[m.medicine],
-    confidence: m.confidence,
-  }));
-  return { symptomLinks, medicineLinks };
-}

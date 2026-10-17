@@ -59,7 +59,8 @@ export default function PatientsPage() {
             }
         };
         fetchPatients();
-    }, [query]);
+        // Load once on mount: typing in the search box must not refetch from the backend.
+    }, []);
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
