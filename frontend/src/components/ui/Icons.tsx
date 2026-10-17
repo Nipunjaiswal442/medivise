@@ -193,6 +193,24 @@ export function TrashIcon(props: IconProps) {
   );
 }
 
+export function AlertTriangleIcon(props: IconProps) {
+  return (
+    <Icon style={{ flexShrink: 0 }} {...props}>
+      <path d="M12 9V4l-6 6h12V9z" />
+      <path d="M12 18h.01" />
+    </Icon>
+  );
+}
+
+export function PillIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <rect width="2" height="20" x="11" y="2" rx="1" ry="1" />
+      <rect width="18" height="2" x="3" y="11" rx="1" ry="1" />
+    </Icon>
+  );
+}
+
 export function SparklesIcon(props: IconProps) {
   return (
     <Icon {...props}>

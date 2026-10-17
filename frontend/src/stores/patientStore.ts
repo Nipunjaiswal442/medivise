@@ -1,4 +1,10 @@
-import { apiClient } from '@/api/client';
+import { convex } from "@/convex/client";
+
+const callQuery = (path: string, args: any) =>
+  convex.query(path as any, args);
+
+const callMutation = (path: string, args: any) =>
+  convex.mutation(path as any, args);
 
 export interface ConsultationSymptom {
     name: string;
@@ -12,8 +18,8 @@ export interface ConsultationPrescription {
 }
 
 export interface SavedPatient {
-    id: string; // our internal UI id
-    customId?: string; // from backend
+    id: string;
+    customId?: string;
     name: string;
     age: number;
     gender: string;
@@ -29,11 +35,21 @@ export interface SavedPatient {
 
 export async function getSavedPatients(): Promise<SavedPatient[]> {
     try {
-        const res = await apiClient.get('/api/patients');
-        // Map backend _id/customId to id
-        return res.data.data.map((p: any) => ({
-            ...p,
-            id: p.customId || p._id,
+        const patients = await callQuery("functions/patients.getPatients", {});
+        return patients.map((p: any) => ({
+            id: p._id,
+            customId: p.customId,
+            name: p.name,
+            age: p.age,
+            gender: p.gender,
+            condition: p.condition,
+            lastVisit: p.lastVisit,
+            status: p.status,
+            consultationDuration: p.consultationDuration,
+            symptoms: p.symptoms || [],
+            prescriptions: p.prescriptions || [],
+            aiReview: p.aiReview || "",
+            createdAt: new Date(p.createdAt || 0).toISOString(),
         }));
     } catch (err) {
         console.error('Failed to fetch patients:', err);
@@ -43,8 +59,19 @@ export async function getSavedPatients(): Promise<SavedPatient[]> {
 
 export async function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'>): Promise<string> {
     try {
-        const res = await apiClient.post('/api/patients', patient);
-        return res.data.data.customId || res.data.data._id;
+        const res: any = await callMutation("functions/patients.createPatient", {
+            name: patient.name,
+            age: patient.age,
+            gender: patient.gender,
+            condition: patient.condition,
+            lastVisit: patient.lastVisit,
+            status: patient.status,
+            consultationDuration: patient.consultationDuration,
+            symptoms: patient.symptoms,
+            prescriptions: patient.prescriptions,
+            aiReview: patient.aiReview,
+        });
+        return res._id;
     } catch (err) {
         console.error('Failed to save patient:', err);
         throw err;
@@ -53,7 +80,7 @@ export async function savePatient(patient: Omit<SavedPatient, 'id' | 'createdAt'
 
 export async function deletePatient(id: string): Promise<void> {
     try {
-        await apiClient.delete(`/api/patients/${id}`);
+        await callMutation("functions/patients.deletePatient", { id });
     } catch (err) {
         console.error('Failed to delete patient:', err);
         throw err;

@@ -5,8 +5,11 @@ import {
     CameraIcon,
     TrashIcon,
     SparklesIcon,
+    AlertTriangleIcon,
+    PillIcon,
 } from '@/components/ui/Icons';
 import { savePatient } from '@/stores/patientStore';
+import { healthService, type HealthPredictionRequest } from '@/services/health.service';
 import styles from './ConsultationPage.module.css';
 
 interface SymptomRow {
@@ -51,6 +54,8 @@ export default function ConsultationPage() {
     const [aiReview, setAiReview] = useState('');
     const [aiLoading, setAiLoading] = useState(false);
     const [saveMessage, setSaveMessage] = useState('');
+    const [predictionResult, setPredictionResult] = useState<any>(null);
+    const [predictionLoading, setPredictionLoading] = useState(false);
 
     useEffect(() => {
         if (!running) return;
@@ -209,6 +214,37 @@ export default function ConsultationPage() {
 
     const handleFacialRecognition = () => {
         alert('Facial recognition feature coming soon.');
+    };
+
+    const runHealthPrediction = async () => {
+        const filledSymptoms = symptoms.filter((s) => s.name.trim());
+        if (filledSymptoms.length === 0) {
+            alert('Please enter at least one symptom before running a health prediction.');
+            return;
+        }
+        const ageNum = parseInt(patientAge, 10) || 0;
+        if (ageNum <= 0) {
+            alert('Please enter a valid patient age.');
+            return;
+        }
+
+        setPredictionLoading(true);
+        setPredictionResult(null);
+
+        try {
+            const request: HealthPredictionRequest = {
+                patientId: patientId || 'temp-' + Date.now(),
+                symptoms: filledSymptoms.map((s) => s.name.trim()),
+                age: ageNum,
+                gender: patientGender,
+            };
+            const res = await healthService.predictHealth(request);
+            setPredictionResult(res);
+        } catch (err: any) {
+            alert('Health prediction failed: ' + (err.message || 'Unknown error'));
+        } finally {
+            setPredictionLoading(false);
+        }
     };
 
     return (
@@ -489,6 +525,99 @@ export default function ConsultationPage() {
                     </div>
                 </div>
             </div>
+
+            {predictionResult && (
+                <div className={styles.predictionResultsSection}>
+                    <div className={styles.predictionResultsHeader}>
+                        <h3 className={styles.predictionResultsTitle}>AI Health Prediction</h3>
+                        <PillIcon size={20} className={styles.predictionIcon} />
+                    </div>
+                    <div className={styles.predictionResultsGrid}>
+                        <div className={styles.predictionResultCard}>
+                            <span className={styles.predictionDiseaseName}>{predictionResult.disease.name}</span>
+                            <span className={styles.predictionConfidenceBadge} style={{ backgroundColor: confidenceColor(predictionResult.disease.confidence) }}>
+                                {predictionResult.disease.confidence}%
+                            </span>
+                        </div>
+                        <div className={styles.predictionResultCard}>
+                            <span className={styles.predictionLabel}>Confidence</span>
+                            <span className={styles.predictionConfidenceValue}>{predictionResult.disease.confidence}%</span>
+                        </div>
+                    </div>
+                    <div className={styles.predictionMedicines}>
+                        <h4 className={styles.predictionMedicinesTitle}>Recommended Medicines</h4>
+                        <p className={styles.predictionMedicinesHint}>
+                            Confidence indicates how commonly each medicine is used for this condition.
+                        </p>
+                        <div className={styles.predictionMedicineList}>
+                            {predictionResult.medicines.map((med: any, i: number) => (
+                                <div key={i} className={styles.predictionMedicineItem}>
+                                    <span className={styles.predictionMedicineName}>{med.name}</span>
+                                    <span className={styles.predictionMedicineConfidence} style={{ backgroundColor: confidenceColor(med.confidence) }}>
+                                        {med.confidence}%
+                                    </span>
+                                    <div className={styles.predictionMedicineDetails}>
+                                        {med.dosage && <span className={styles.predictionMedicineChip}>Dosage: {med.dosage}</span>}
+                                        {med.frequency && <span className={styles.predictionMedicineChip}>Freq: {med.frequency}</span>}
+                                        {med.duration && <span className={styles.predictionMedicineChip}>Duration: {med.duration}</span>}
+                                        {med.contraindications && (
+                                            <span className={styles.predictionMedicineChip + " " + styles.predictionMedicineWarning}>
+                                                ! {med.contraindications}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                            {predictionResult.medicines.length === 0 && (
+                                <p className={styles.predictionNoMedicines}>
+                                    No specific medicine recommendations available.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    <div className={styles.predictionDisclaimer}>
+                        <AlertTriangleIcon size={14} />
+                        <span>
+                            AI-generated prediction for informational purposes only. Not a substitute for
+                            professional medical advice.
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            <div className={styles.predictionActionRow}>
+                <button
+                    className={styles.predictionBtn}
+                    onClick={runHealthPrediction}
+                    disabled={predictionLoading}
+                >
+                    {predictionLoading ? (
+                        <>
+                            <span className={styles.spinnerSmall} />
+                            Analyzing…
+                        </>
+                    ) : (
+                        <>
+                            <SparklesIcon size={14} />
+                            Run AI Health Prediction
+                        </>
+                    )}
+                </button>
+                {predictionResult && (
+                    <button
+                        className={styles.predictionBtnReset}
+                        onClick={() => setPredictionResult(null)}
+                    >
+                        Clear
+                    </button>
+                )}
+            </div>
         </>
     );
+}
+
+function confidenceColor(conf: number): string {
+    if (conf >= 70) return '#16A34A';
+    if (conf >= 40) return '#CA8A04';
+    return '#DC2626';
 }

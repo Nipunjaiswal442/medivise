@@ -12,6 +12,7 @@ import SettingsPage from '@/pages/SettingsPage';
 import PatientsPage from '@/pages/PatientsPage';
 import ConsultationPage from '@/pages/ConsultationPage';
 import NewsPage from '@/pages/NewsPage';
+import PredictionPage from '@/pages/PredictionPage';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/patients" element={<PatientsPage />} />
               <Route path="/consultation" element={<ConsultationPage />} />
+              <Route path="/prediction" element={<PredictionPage />} />
               <Route path="/news" element={<NewsPage />} />
             </Route>
 

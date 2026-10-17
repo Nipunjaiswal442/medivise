@@ -490,3 +490,230 @@
     justify-content: center;
   }
 }
+
+/* ── Health Prediction Section ─────────────────────────────────────── */
+.predictionResultsSection {
+  margin-top: 1.5rem;
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-primary-bg);
+  overflow: hidden;
+}
+
+.predictionResultsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-primary-bg);
+  border-bottom: 1px solid var(--color-primary);
+}
+
+.predictionIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.predictionResultsTitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.predictionResultsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.predictionResultCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+}
+
+.predictionDiseaseName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.predictionConfidenceBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.predictionLabel {
+  font-size: 0.8125rem;
+  color: var(--color-gray-500);
+}
+
+.predictionConfidenceValue {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.predictionMedicines {
+  padding: 1.25rem;
+}
+
+.predictionMedicinesTitle {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.predictionMedicinesHint {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--color-gray-500);
+}
+
+.predictionMedicineList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.predictionMedicineItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border-radius: var(--radius-md);
+}
+
+.predictionMedicineName {
+  font-weight: 600;
+  color: var(--color-gray-900);
+  font-size: 0.875rem;
+}
+
+.predictionMedicineConfidence {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.predictionMedicineDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.predictionMedicineChip {
+  padding: 0.125rem 0.5rem;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  color: var(--color-gray-600);
+}
+
+.predictionMedicineWarning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.predictionNoMedicines {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-gray-500);
+  text-align: center;
+  padding: 1rem;
+}
+
+.predictionDisclaimer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  background: #fef3c7;
+  border-top: 1px solid #fcd34d;
+  font-size: 0.75rem;
+  color: #92400e;
+}
+
+.predictionActionRow {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+.predictionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.predictionBtn:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.predictionBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.predictionBtnReset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+  background: var(--color-gray-100);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.predictionBtnReset:hover {
+  background: var(--color-gray-200);
+}
+
+.spinnerSmall {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

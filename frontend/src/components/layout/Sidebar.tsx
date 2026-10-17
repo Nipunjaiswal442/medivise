@@ -7,6 +7,7 @@ import {
   StethoscopeIcon,
   NewspaperIcon,
   SettingsIcon,
+  SparklesIcon,
 } from '@/components/ui/Icons';
 import styles from './Sidebar.module.css';
 
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   { to: '/chat', label: 'AI Assistant', icon: MessageSquareIcon },
   { to: '/patients', label: 'Patients', icon: UsersIcon },
   { to: '/consultation', label: 'Start Consultation', icon: StethoscopeIcon },
+  { to: '/prediction', label: 'Health Prediction', icon: SparklesIcon },
   { to: '/news', label: 'Medical News', icon: NewspaperIcon },
   { to: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
