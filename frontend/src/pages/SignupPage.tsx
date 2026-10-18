@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/Icons';
 import { InlineSpinner } from '@/components/ui/Spinner';
 import { useAuth } from '@/context/AuthContext';
+import { errorMessage } from '@/convex/client';
 import styles from './SignupPage.module.css';
 
 interface SignupForm {
@@ -120,22 +121,12 @@ export default function SignupPage() {
             });
             setSuccess(true);
         } catch (err: unknown) {
-            const code = (err as { code?: string })?.code ?? '';
-            let message: string;
-            switch (code) {
-                case 'auth/email-already-in-use':
-                    message = 'An account with this email already exists.';
-                    break;
-                case 'auth/weak-password':
-                    message = 'Password is too weak. Use at least 6 characters.';
-                    break;
-                case 'auth/invalid-email':
-                    message = 'Invalid email address.';
-                    break;
-                default:
-                    message = 'Registration failed. Please try again.';
-            }
-            setErrors({ general: message });
+            const message = errorMessage(err, '');
+            setErrors({
+                general: message && !/already exists/i.test(message)
+                    ? message
+                    : 'Could not create the account. If you already have one, sign in instead.',
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -153,10 +144,10 @@ export default function SignupPage() {
                     </div>
                     <h2 className={styles.successTitle}>Account Created!</h2>
                     <p className={styles.successText}>
-                        Your Medivise account has been created successfully. You can now sign in with your credentials.
+                        Your Medivise account has been created and you are signed in.
                     </p>
-                    <Link to="/login" className={styles.successBtn}>
-                        Sign in to Medivise
+                    <Link to="/dashboard" className={styles.successBtn}>
+                        Continue to Medivise
                     </Link>
                 </div>
             </div>

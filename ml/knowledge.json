@@ -1,0 +1,2419 @@
+{
+ "diseases": [
+  "Common Cold",
+  "Influenza",
+  "COVID-19",
+  "Asthma",
+  "COPD",
+  "Pneumonia",
+  "Bronchitis",
+  "Hypertension",
+  "Coronary Artery Disease",
+  "Heart Failure",
+  "Atrial Fibrillation",
+  "Stroke",
+  "Peripheral Artery Disease",
+  "Type 2 Diabetes",
+  "Type 1 Diabetes",
+  "Hypothyroidism",
+  "Hyperthyroidism",
+  "Osteoarthritis",
+  "Rheumatoid Arthritis",
+  "Osteoporosis",
+  "Gout",
+  "Migraine",
+  "Epilepsy",
+  "Parkinson's Disease",
+  "Alzheimer's Disease",
+  "Multiple Sclerosis",
+  "Depression",
+  "Anxiety Disorder",
+  "Bipolar Disorder",
+  "PTSD",
+  "Gastritis",
+  "GERD",
+  "Peptic Ulcer",
+  "IBS",
+  "IBD",
+  "Celiac Disease",
+  "Hepatitis B",
+  "Chronic Kidney Disease",
+  "Urinary Tract Infection",
+  "Kidney Stones",
+  "Anemia",
+  "Leukemia",
+  "Lymphoma",
+  "Eczema",
+  "Psoriasis",
+  "Acne",
+  "Dermatitis",
+  "Allergic Rhinitis",
+  "Sinusitis",
+  "Conjunctivitis",
+  "Glaucoma",
+  "Cataracts",
+  "Hypoglycemia",
+  "Hyperlipidemia",
+  "Hernia",
+  "Thyroid Nodule",
+  "Fibromyalgia",
+  "Carpal Tunnel Syndrome",
+  "Sciatica",
+  "Insomnia",
+  "Obesity",
+  "Metabolic Syndrome",
+  "Anaphylaxis",
+  "HIV/AIDS",
+  "Tuberculosis",
+  "Malaria",
+  "Hepatitis C",
+  "Lyme Disease",
+  "Rash",
+  "Vertigo",
+  "Menopause",
+  "PCOS",
+  "Endometriosis",
+  "UTI",
+  "Prostatitis",
+  "Appendicitis",
+  "Gallstones",
+  "Pancreatitis",
+  "Anxiety",
+  "Panic Disorder",
+  "OCD",
+  "Schizophrenia",
+  "Autism Spectrum Disorder",
+  "ADHD"
+ ],
+ "symptoms": [
+  "Fever",
+  "Cough",
+  "Shortness of breath",
+  "Chest pain",
+  "Fatigue",
+  "Headache",
+  "Nausea",
+  "Vomiting",
+  "Diarrhea",
+  "Constipation",
+  "Abdominal pain",
+  "Sore throat",
+  "Runny nose",
+  "Nasal congestion",
+  "Sneezing",
+  "Body aches",
+  "Joint pain",
+  "Muscle weakness",
+  "Dizziness",
+  "Fainting",
+  "Rash",
+  "Itching",
+  "Swelling",
+  "Bruising",
+  "Weight loss",
+  "Weight gain",
+  "Loss of appetite",
+  "Increased thirst",
+  "Frequent urination",
+  "Painful urination",
+  "Blood in urine",
+  "Back pain",
+  "Neck pain",
+  "Blurred vision",
+  "Double vision",
+  "Hearing loss",
+  "Tinnitus",
+  "Hoarseness",
+  "Difficulty swallowing",
+  "Heartburn",
+  "Bloating",
+  "Belching",
+  "Jaundice",
+  "Pale skin",
+  "Cold hands and feet",
+  "Night sweats",
+  "Insomnia",
+  "Excessive sleepiness",
+  "Memory loss",
+  "Confusion",
+  "Anxiety",
+  "Depression",
+  "Irritability",
+  "Mood swings",
+  "Tremors",
+  "Numbness",
+  "Tingling",
+  "Weakness",
+  "Paralysis",
+  "Seizure",
+  "Loss of consciousness",
+  "Chills",
+  "Swollen lymph nodes",
+  "Dry mouth",
+  "Excessive sweating",
+  "Palpitations",
+  "Swollen ankles",
+  "Coughing blood",
+  "Wheezing",
+  "Snoring",
+  "Sleep apnea",
+  "Male sexual dysfunction",
+  "Female sexual dysfunction",
+  "Irregular periods",
+  "Heavy menstrual bleeding",
+  "Pelvic pain",
+  "Breast pain",
+  "Breast lump",
+  "Vaginal discharge",
+  "Penile discharge",
+  "Genital itching",
+  "Genital ulcers",
+  "Easy bleeding",
+  "Easy bruising",
+  "Nosebleed",
+  "Bleeding gums",
+  "Delayed wound healing",
+  "Hair loss",
+  "Dry skin",
+  "Oily skin",
+  "Yellow eyes",
+  "Dark urine",
+  "Clay-colored stools",
+  "Black stools",
+  "Blood in stool",
+  "Mucus in stool",
+  "Difficulty breathing",
+  "Difficulty speaking",
+  "Increased appetite",
+  "Stiffness",
+  "Reduced range of motion",
+  "Morning stiffness",
+  "Bone fractures",
+  "Loss of height",
+  "Posture changes",
+  "Redness in joints",
+  "Big toe pain",
+  "Sensitivity to light",
+  "Difficulty concentrating",
+  "Hopelessness",
+  "Loss of interest",
+  "Sweating",
+  "Regurgitation",
+  "Gas",
+  "Watery eyes",
+  "Facial pain",
+  "Post-nasal drip",
+  "Redness",
+  "Scaly skin",
+  "Pimples",
+  "Red eyes",
+  "Eye discharge",
+  "Balance problems",
+  "Hot flashes",
+  "Acne",
+  "Excessive hair growth",
+  "Rapid pulse",
+  "Sleep problems",
+  "Hand weakness",
+  "Wrist pain",
+  "Leg pain",
+  "Repetitive thoughts",
+  "Compulsive behaviors",
+  "Distress",
+  "Hallucinations",
+  "Delusions",
+  "Disorganized thinking",
+  "Social withdrawal",
+  "Flat affect",
+  "Hyperactivity",
+  "Impulsivity",
+  "Restlessness",
+  "Forgetfulness",
+  "Social communication difficulties",
+  "Repetitive behaviors",
+  "Sensory sensitivities",
+  "Delayed speech",
+  "Flashbacks",
+  "Nightmares",
+  "Avoidance",
+  "Hypervigilance",
+  "Manic episodes",
+  "Risky behavior",
+  "Disorientation",
+  "Personality changes",
+  "Slow movement",
+  "Vision problems",
+  "Staring spells",
+  "Eye pain",
+  "Halos around lights",
+  "Vision loss",
+  "Night vision problems"
+ ],
+ "links": [
+  {
+   "disease": "Common Cold",
+   "symptom": "Cough",
+   "weight": 0.8
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Runny nose",
+   "weight": 0.9
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Sore throat",
+   "weight": 0.7
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Sneezing",
+   "weight": 0.8
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Nasal congestion",
+   "weight": 0.8
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Headache",
+   "weight": 0.4
+  },
+  {
+   "disease": "Common Cold",
+   "symptom": "Body aches",
+   "weight": 0.5
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Fever",
+   "weight": 0.9
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Cough",
+   "weight": 0.8
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Fatigue",
+   "weight": 0.8
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Body aches",
+   "weight": 0.8
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Headache",
+   "weight": 0.7
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Chills",
+   "weight": 0.8
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Sore throat",
+   "weight": 0.5
+  },
+  {
+   "disease": "Influenza",
+   "symptom": "Runny nose",
+   "weight": 0.4
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Fever",
+   "weight": 0.8
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Cough",
+   "weight": 0.8
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Shortness of breath",
+   "weight": 0.7
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Fatigue",
+   "weight": 0.7
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Loss of appetite",
+   "weight": 0.5
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Headache",
+   "weight": 0.5
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Sore throat",
+   "weight": 0.4
+  },
+  {
+   "disease": "COVID-19",
+   "symptom": "Body aches",
+   "weight": 0.6
+  },
+  {
+   "disease": "Asthma",
+   "symptom": "Shortness of breath",
+   "weight": 0.9
+  },
+  {
+   "disease": "Asthma",
+   "symptom": "Wheezing",
+   "weight": 0.9
+  },
+  {
+   "disease": "Asthma",
+   "symptom": "Cough",
+   "weight": 0.7
+  },
+  {
+   "disease": "Asthma",
+   "symptom": "Chest pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "Asthma",
+   "symptom": "Difficulty breathing",
+   "weight": 0.8
+  },
+  {
+   "disease": "COPD",
+   "symptom": "Shortness of breath",
+   "weight": 0.9
+  },
+  {
+   "disease": "COPD",
+   "symptom": "Cough",
+   "weight": 0.8
+  },
+  {
+   "disease": "COPD",
+   "symptom": "Wheezing",
+   "weight": 0.7
+  },
+  {
+   "disease": "COPD",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "COPD",
+   "symptom": "Chest pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Pneumonia",
+   "symptom": "Fever",
+   "weight": 0.8
+  },
+  {
+   "disease": "Pneumonia",
+   "symptom": "Cough",
+   "weight": 0.9
+  },
+  {
+   "disease": "Pneumonia",
+   "symptom": "Shortness of breath",
+   "weight": 0.8
+  },
+  {
+   "disease": "Pneumonia",
+   "symptom": "Chest pain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Pneumonia",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Pneumonia",
+   "symptom": "Chills",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hypertension",
+   "symptom": "Headache",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hypertension",
+   "symptom": "Dizziness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hypertension",
+   "symptom": "Chest pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hypertension",
+   "symptom": "Blurred vision",
+   "weight": 0.3
+  },
+  {
+   "disease": "Hypertension",
+   "symptom": "Fatigue",
+   "weight": 0.3
+  },
+  {
+   "disease": "Coronary Artery Disease",
+   "symptom": "Chest pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Coronary Artery Disease",
+   "symptom": "Shortness of breath",
+   "weight": 0.7
+  },
+  {
+   "disease": "Coronary Artery Disease",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Coronary Artery Disease",
+   "symptom": "Dizziness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Coronary Artery Disease",
+   "symptom": "Palpitations",
+   "weight": 0.5
+  },
+  {
+   "disease": "Heart Failure",
+   "symptom": "Shortness of breath",
+   "weight": 0.8
+  },
+  {
+   "disease": "Heart Failure",
+   "symptom": "Fatigue",
+   "weight": 0.8
+  },
+  {
+   "disease": "Heart Failure",
+   "symptom": "Swollen ankles",
+   "weight": 0.7
+  },
+  {
+   "disease": "Heart Failure",
+   "symptom": "Chest pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "Heart Failure",
+   "symptom": "Palpitations",
+   "weight": 0.5
+  },
+  {
+   "disease": "Atrial Fibrillation",
+   "symptom": "Palpitations",
+   "weight": 0.9
+  },
+  {
+   "disease": "Atrial Fibrillation",
+   "symptom": "Dizziness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Atrial Fibrillation",
+   "symptom": "Shortness of breath",
+   "weight": 0.6
+  },
+  {
+   "disease": "Atrial Fibrillation",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Atrial Fibrillation",
+   "symptom": "Chest pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Stroke",
+   "symptom": "Headache",
+   "weight": 0.5
+  },
+  {
+   "disease": "Stroke",
+   "symptom": "Dizziness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Stroke",
+   "symptom": "Confusion",
+   "weight": 0.7
+  },
+  {
+   "disease": "Stroke",
+   "symptom": "Numbness",
+   "weight": 0.7
+  },
+  {
+   "disease": "Stroke",
+   "symptom": "Weakness",
+   "weight": 0.7
+  },
+  {
+   "disease": "Stroke",
+   "symptom": "Difficulty speaking",
+   "weight": 0.6
+  },
+  {
+   "disease": "Type 2 Diabetes",
+   "symptom": "Increased thirst",
+   "weight": 0.8
+  },
+  {
+   "disease": "Type 2 Diabetes",
+   "symptom": "Frequent urination",
+   "weight": 0.8
+  },
+  {
+   "disease": "Type 2 Diabetes",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Type 2 Diabetes",
+   "symptom": "Blurred vision",
+   "weight": 0.5
+  },
+  {
+   "disease": "Type 2 Diabetes",
+   "symptom": "Weight loss",
+   "weight": 0.4
+  },
+  {
+   "disease": "Type 2 Diabetes",
+   "symptom": "Delayed wound healing",
+   "weight": 0.5
+  },
+  {
+   "disease": "Type 1 Diabetes",
+   "symptom": "Increased thirst",
+   "weight": 0.8
+  },
+  {
+   "disease": "Type 1 Diabetes",
+   "symptom": "Frequent urination",
+   "weight": 0.8
+  },
+  {
+   "disease": "Type 1 Diabetes",
+   "symptom": "Weight loss",
+   "weight": 0.7
+  },
+  {
+   "disease": "Type 1 Diabetes",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Type 1 Diabetes",
+   "symptom": "Increased appetite",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hypothyroidism",
+   "symptom": "Fatigue",
+   "weight": 0.8
+  },
+  {
+   "disease": "Hypothyroidism",
+   "symptom": "Weight gain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Hypothyroidism",
+   "symptom": "Cold hands and feet",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hypothyroidism",
+   "symptom": "Dry skin",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hypothyroidism",
+   "symptom": "Constipation",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hypothyroidism",
+   "symptom": "Depression",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hyperthyroidism",
+   "symptom": "Weight loss",
+   "weight": 0.7
+  },
+  {
+   "disease": "Hyperthyroidism",
+   "symptom": "Palpitations",
+   "weight": 0.7
+  },
+  {
+   "disease": "Hyperthyroidism",
+   "symptom": "Anxiety",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hyperthyroidism",
+   "symptom": "Excessive sweating",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hyperthyroidism",
+   "symptom": "Tremors",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hyperthyroidism",
+   "symptom": "Fatigue",
+   "weight": 0.4
+  },
+  {
+   "disease": "Osteoarthritis",
+   "symptom": "Joint pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Osteoarthritis",
+   "symptom": "Stiffness",
+   "weight": 0.7
+  },
+  {
+   "disease": "Osteoarthritis",
+   "symptom": "Swelling",
+   "weight": 0.5
+  },
+  {
+   "disease": "Osteoarthritis",
+   "symptom": "Reduced range of motion",
+   "weight": 0.6
+  },
+  {
+   "disease": "Rheumatoid Arthritis",
+   "symptom": "Joint pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Rheumatoid Arthritis",
+   "symptom": "Swelling",
+   "weight": 0.7
+  },
+  {
+   "disease": "Rheumatoid Arthritis",
+   "symptom": "Stiffness",
+   "weight": 0.7
+  },
+  {
+   "disease": "Rheumatoid Arthritis",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Rheumatoid Arthritis",
+   "symptom": "Morning stiffness",
+   "weight": 0.8
+  },
+  {
+   "disease": "Osteoporosis",
+   "symptom": "Back pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "Osteoporosis",
+   "symptom": "Bone fractures",
+   "weight": 0.6
+  },
+  {
+   "disease": "Osteoporosis",
+   "symptom": "Loss of height",
+   "weight": 0.5
+  },
+  {
+   "disease": "Osteoporosis",
+   "symptom": "Posture changes",
+   "weight": 0.4
+  },
+  {
+   "disease": "Gout",
+   "symptom": "Joint pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Gout",
+   "symptom": "Swelling",
+   "weight": 0.8
+  },
+  {
+   "disease": "Gout",
+   "symptom": "Redness in joints",
+   "weight": 0.7
+  },
+  {
+   "disease": "Gout",
+   "symptom": "Big toe pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Migraine",
+   "symptom": "Headache",
+   "weight": 0.9
+  },
+  {
+   "disease": "Migraine",
+   "symptom": "Nausea",
+   "weight": 0.6
+  },
+  {
+   "disease": "Migraine",
+   "symptom": "Vomiting",
+   "weight": 0.4
+  },
+  {
+   "disease": "Migraine",
+   "symptom": "Blurred vision",
+   "weight": 0.5
+  },
+  {
+   "disease": "Migraine",
+   "symptom": "Sensitivity to light",
+   "weight": 0.7
+  },
+  {
+   "disease": "Migraine",
+   "symptom": "Dizziness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Insomnia",
+   "weight": 0.7
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Loss of appetite",
+   "weight": 0.5
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Weight loss",
+   "weight": 0.4
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Difficulty concentrating",
+   "weight": 0.5
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Hopelessness",
+   "weight": 0.8
+  },
+  {
+   "disease": "Depression",
+   "symptom": "Loss of interest",
+   "weight": 0.8
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Anxiety",
+   "weight": 0.9
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Palpitations",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Sweating",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Tremors",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Insomnia",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Dizziness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Anxiety Disorder",
+   "symptom": "Shortness of breath",
+   "weight": 0.5
+  },
+  {
+   "disease": "Gastritis",
+   "symptom": "Abdominal pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Gastritis",
+   "symptom": "Nausea",
+   "weight": 0.7
+  },
+  {
+   "disease": "Gastritis",
+   "symptom": "Vomiting",
+   "weight": 0.5
+  },
+  {
+   "disease": "Gastritis",
+   "symptom": "Bloating",
+   "weight": 0.6
+  },
+  {
+   "disease": "Gastritis",
+   "symptom": "Loss of appetite",
+   "weight": 0.5
+  },
+  {
+   "disease": "GERD",
+   "symptom": "Heartburn",
+   "weight": 0.9
+  },
+  {
+   "disease": "GERD",
+   "symptom": "Chest pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "GERD",
+   "symptom": "Difficulty swallowing",
+   "weight": 0.5
+  },
+  {
+   "disease": "GERD",
+   "symptom": "Regurgitation",
+   "weight": 0.7
+  },
+  {
+   "disease": "GERD",
+   "symptom": "Bloating",
+   "weight": 0.4
+  },
+  {
+   "disease": "Peptic Ulcer",
+   "symptom": "Abdominal pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Peptic Ulcer",
+   "symptom": "Nausea",
+   "weight": 0.5
+  },
+  {
+   "disease": "Peptic Ulcer",
+   "symptom": "Bloating",
+   "weight": 0.5
+  },
+  {
+   "disease": "Peptic Ulcer",
+   "symptom": "Heartburn",
+   "weight": 0.4
+  },
+  {
+   "disease": "Peptic Ulcer",
+   "symptom": "Weight loss",
+   "weight": 0.4
+  },
+  {
+   "disease": "IBS",
+   "symptom": "Abdominal pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "IBS",
+   "symptom": "Bloating",
+   "weight": 0.7
+  },
+  {
+   "disease": "IBS",
+   "symptom": "Diarrhea",
+   "weight": 0.6
+  },
+  {
+   "disease": "IBS",
+   "symptom": "Constipation",
+   "weight": 0.6
+  },
+  {
+   "disease": "IBS",
+   "symptom": "Gas",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anemia",
+   "symptom": "Fatigue",
+   "weight": 0.8
+  },
+  {
+   "disease": "Anemia",
+   "symptom": "Pale skin",
+   "weight": 0.7
+  },
+  {
+   "disease": "Anemia",
+   "symptom": "Shortness of breath",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anemia",
+   "symptom": "Dizziness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anemia",
+   "symptom": "Cold hands and feet",
+   "weight": 0.4
+  },
+  {
+   "disease": "Anemia",
+   "symptom": "Headache",
+   "weight": 0.3
+  },
+  {
+   "disease": "Urinary Tract Infection",
+   "symptom": "Frequent urination",
+   "weight": 0.8
+  },
+  {
+   "disease": "Urinary Tract Infection",
+   "symptom": "Painful urination",
+   "weight": 0.9
+  },
+  {
+   "disease": "Urinary Tract Infection",
+   "symptom": "Abdominal pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "Urinary Tract Infection",
+   "symptom": "Blood in urine",
+   "weight": 0.4
+  },
+  {
+   "disease": "Urinary Tract Infection",
+   "symptom": "Fever",
+   "weight": 0.3
+  },
+  {
+   "disease": "Kidney Stones",
+   "symptom": "Abdominal pain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Kidney Stones",
+   "symptom": "Back pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Kidney Stones",
+   "symptom": "Painful urination",
+   "weight": 0.5
+  },
+  {
+   "disease": "Kidney Stones",
+   "symptom": "Blood in urine",
+   "weight": 0.6
+  },
+  {
+   "disease": "Kidney Stones",
+   "symptom": "Nausea",
+   "weight": 0.4
+  },
+  {
+   "disease": "Allergic Rhinitis",
+   "symptom": "Sneezing",
+   "weight": 0.9
+  },
+  {
+   "disease": "Allergic Rhinitis",
+   "symptom": "Runny nose",
+   "weight": 0.9
+  },
+  {
+   "disease": "Allergic Rhinitis",
+   "symptom": "Nasal congestion",
+   "weight": 0.8
+  },
+  {
+   "disease": "Allergic Rhinitis",
+   "symptom": "Itching",
+   "weight": 0.6
+  },
+  {
+   "disease": "Allergic Rhinitis",
+   "symptom": "Watery eyes",
+   "weight": 0.6
+  },
+  {
+   "disease": "Sinusitis",
+   "symptom": "Nasal congestion",
+   "weight": 0.8
+  },
+  {
+   "disease": "Sinusitis",
+   "symptom": "Facial pain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Sinusitis",
+   "symptom": "Headache",
+   "weight": 0.6
+  },
+  {
+   "disease": "Sinusitis",
+   "symptom": "Post-nasal drip",
+   "weight": 0.6
+  },
+  {
+   "disease": "Sinusitis",
+   "symptom": "Fever",
+   "weight": 0.3
+  },
+  {
+   "disease": "Bronchitis",
+   "symptom": "Cough",
+   "weight": 0.9
+  },
+  {
+   "disease": "Bronchitis",
+   "symptom": "Shortness of breath",
+   "weight": 0.6
+  },
+  {
+   "disease": "Bronchitis",
+   "symptom": "Chest pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Bronchitis",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Bronchitis",
+   "symptom": "Fever",
+   "weight": 0.4
+  },
+  {
+   "disease": "Insomnia",
+   "symptom": "Insomnia",
+   "weight": 0.9
+  },
+  {
+   "disease": "Insomnia",
+   "symptom": "Fatigue",
+   "weight": 0.7
+  },
+  {
+   "disease": "Insomnia",
+   "symptom": "Difficulty concentrating",
+   "weight": 0.5
+  },
+  {
+   "disease": "Insomnia",
+   "symptom": "Irritability",
+   "weight": 0.5
+  },
+  {
+   "disease": "Obesity",
+   "symptom": "Weight gain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Obesity",
+   "symptom": "Shortness of breath",
+   "weight": 0.5
+  },
+  {
+   "disease": "Obesity",
+   "symptom": "Fatigue",
+   "weight": 0.4
+  },
+  {
+   "disease": "Obesity",
+   "symptom": "Joint pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hypoglycemia",
+   "symptom": "Dizziness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hypoglycemia",
+   "symptom": "Sweating",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hypoglycemia",
+   "symptom": "Tremors",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hypoglycemia",
+   "symptom": "Confusion",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hypoglycemia",
+   "symptom": "Weakness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hypoglycemia",
+   "symptom": "Palpitations",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hyperlipidemia",
+   "symptom": "Chest pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hyperlipidemia",
+   "symptom": "Fatigue",
+   "weight": 0.3
+  },
+  {
+   "disease": "Hyperlipidemia",
+   "symptom": "Shortness of breath",
+   "weight": 0.3
+  },
+  {
+   "disease": "Eczema",
+   "symptom": "Itching",
+   "weight": 0.8
+  },
+  {
+   "disease": "Eczema",
+   "symptom": "Rash",
+   "weight": 0.8
+  },
+  {
+   "disease": "Eczema",
+   "symptom": "Dry skin",
+   "weight": 0.6
+  },
+  {
+   "disease": "Eczema",
+   "symptom": "Redness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Psoriasis",
+   "symptom": "Rash",
+   "weight": 0.7
+  },
+  {
+   "disease": "Psoriasis",
+   "symptom": "Itching",
+   "weight": 0.6
+  },
+  {
+   "disease": "Psoriasis",
+   "symptom": "Scaly skin",
+   "weight": 0.7
+  },
+  {
+   "disease": "Psoriasis",
+   "symptom": "Redness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Acne",
+   "symptom": "Rash",
+   "weight": 0.6
+  },
+  {
+   "disease": "Acne",
+   "symptom": "Oily skin",
+   "weight": 0.6
+  },
+  {
+   "disease": "Acne",
+   "symptom": "Pimples",
+   "weight": 0.8
+  },
+  {
+   "disease": "Acne",
+   "symptom": "Redness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Conjunctivitis",
+   "symptom": "Red eyes",
+   "weight": 0.8
+  },
+  {
+   "disease": "Conjunctivitis",
+   "symptom": "Itching",
+   "weight": 0.6
+  },
+  {
+   "disease": "Conjunctivitis",
+   "symptom": "Watery eyes",
+   "weight": 0.7
+  },
+  {
+   "disease": "Conjunctivitis",
+   "symptom": "Eye discharge",
+   "weight": 0.6
+  },
+  {
+   "disease": "Vertigo",
+   "symptom": "Dizziness",
+   "weight": 0.9
+  },
+  {
+   "disease": "Vertigo",
+   "symptom": "Nausea",
+   "weight": 0.5
+  },
+  {
+   "disease": "Vertigo",
+   "symptom": "Balance problems",
+   "weight": 0.7
+  },
+  {
+   "disease": "Vertigo",
+   "symptom": "Vomiting",
+   "weight": 0.3
+  },
+  {
+   "disease": "Menopause",
+   "symptom": "Hot flashes",
+   "weight": 0.8
+  },
+  {
+   "disease": "Menopause",
+   "symptom": "Night sweats",
+   "weight": 0.8
+  },
+  {
+   "disease": "Menopause",
+   "symptom": "Irregular periods",
+   "weight": 0.7
+  },
+  {
+   "disease": "Menopause",
+   "symptom": "Insomnia",
+   "weight": 0.5
+  },
+  {
+   "disease": "Menopause",
+   "symptom": "Mood swings",
+   "weight": 0.5
+  },
+  {
+   "disease": "PCOS",
+   "symptom": "Irregular periods",
+   "weight": 0.8
+  },
+  {
+   "disease": "PCOS",
+   "symptom": "Weight gain",
+   "weight": 0.5
+  },
+  {
+   "disease": "PCOS",
+   "symptom": "Acne",
+   "weight": 0.5
+  },
+  {
+   "disease": "PCOS",
+   "symptom": "Hair loss",
+   "weight": 0.4
+  },
+  {
+   "disease": "PCOS",
+   "symptom": "Excessive hair growth",
+   "weight": 0.6
+  },
+  {
+   "disease": "Appendicitis",
+   "symptom": "Abdominal pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Appendicitis",
+   "symptom": "Nausea",
+   "weight": 0.6
+  },
+  {
+   "disease": "Appendicitis",
+   "symptom": "Vomiting",
+   "weight": 0.5
+  },
+  {
+   "disease": "Appendicitis",
+   "symptom": "Fever",
+   "weight": 0.4
+  },
+  {
+   "disease": "Appendicitis",
+   "symptom": "Loss of appetite",
+   "weight": 0.5
+  },
+  {
+   "disease": "Gallstones",
+   "symptom": "Abdominal pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Gallstones",
+   "symptom": "Nausea",
+   "weight": 0.5
+  },
+  {
+   "disease": "Gallstones",
+   "symptom": "Vomiting",
+   "weight": 0.4
+  },
+  {
+   "disease": "Gallstones",
+   "symptom": "Jaundice",
+   "weight": 0.3
+  },
+  {
+   "disease": "Gallstones",
+   "symptom": "Bloating",
+   "weight": 0.4
+  },
+  {
+   "disease": "Pancreatitis",
+   "symptom": "Abdominal pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Pancreatitis",
+   "symptom": "Nausea",
+   "weight": 0.7
+  },
+  {
+   "disease": "Pancreatitis",
+   "symptom": "Vomiting",
+   "weight": 0.6
+  },
+  {
+   "disease": "Pancreatitis",
+   "symptom": "Fever",
+   "weight": 0.4
+  },
+  {
+   "disease": "Pancreatitis",
+   "symptom": "Rapid pulse",
+   "weight": 0.3
+  },
+  {
+   "disease": "Fibromyalgia",
+   "symptom": "Body aches",
+   "weight": 0.8
+  },
+  {
+   "disease": "Fibromyalgia",
+   "symptom": "Fatigue",
+   "weight": 0.7
+  },
+  {
+   "disease": "Fibromyalgia",
+   "symptom": "Sleep problems",
+   "weight": 0.6
+  },
+  {
+   "disease": "Fibromyalgia",
+   "symptom": "Headache",
+   "weight": 0.4
+  },
+  {
+   "disease": "Fibromyalgia",
+   "symptom": "Depression",
+   "weight": 0.4
+  },
+  {
+   "disease": "Carpal Tunnel Syndrome",
+   "symptom": "Numbness",
+   "weight": 0.7
+  },
+  {
+   "disease": "Carpal Tunnel Syndrome",
+   "symptom": "Tingling",
+   "weight": 0.7
+  },
+  {
+   "disease": "Carpal Tunnel Syndrome",
+   "symptom": "Hand weakness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Carpal Tunnel Syndrome",
+   "symptom": "Wrist pain",
+   "weight": 0.6
+  },
+  {
+   "disease": "Sciatica",
+   "symptom": "Back pain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Sciatica",
+   "symptom": "Leg pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "Sciatica",
+   "symptom": "Numbness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Sciatica",
+   "symptom": "Tingling",
+   "weight": 0.5
+  },
+  {
+   "disease": "Panic Disorder",
+   "symptom": "Palpitations",
+   "weight": 0.7
+  },
+  {
+   "disease": "Panic Disorder",
+   "symptom": "Sweating",
+   "weight": 0.6
+  },
+  {
+   "disease": "Panic Disorder",
+   "symptom": "Tremors",
+   "weight": 0.5
+  },
+  {
+   "disease": "Panic Disorder",
+   "symptom": "Shortness of breath",
+   "weight": 0.7
+  },
+  {
+   "disease": "Panic Disorder",
+   "symptom": "Chest pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "Panic Disorder",
+   "symptom": "Dizziness",
+   "weight": 0.4
+  },
+  {
+   "disease": "OCD",
+   "symptom": "Anxiety",
+   "weight": 0.6
+  },
+  {
+   "disease": "OCD",
+   "symptom": "Repetitive thoughts",
+   "weight": 0.8
+  },
+  {
+   "disease": "OCD",
+   "symptom": "Compulsive behaviors",
+   "weight": 0.8
+  },
+  {
+   "disease": "OCD",
+   "symptom": "Distress",
+   "weight": 0.6
+  },
+  {
+   "disease": "Schizophrenia",
+   "symptom": "Hallucinations",
+   "weight": 0.8
+  },
+  {
+   "disease": "Schizophrenia",
+   "symptom": "Delusions",
+   "weight": 0.8
+  },
+  {
+   "disease": "Schizophrenia",
+   "symptom": "Disorganized thinking",
+   "weight": 0.7
+  },
+  {
+   "disease": "Schizophrenia",
+   "symptom": "Social withdrawal",
+   "weight": 0.5
+  },
+  {
+   "disease": "Schizophrenia",
+   "symptom": "Flat affect",
+   "weight": 0.4
+  },
+  {
+   "disease": "ADHD",
+   "symptom": "Difficulty concentrating",
+   "weight": 0.8
+  },
+  {
+   "disease": "ADHD",
+   "symptom": "Hyperactivity",
+   "weight": 0.8
+  },
+  {
+   "disease": "ADHD",
+   "symptom": "Impulsivity",
+   "weight": 0.7
+  },
+  {
+   "disease": "ADHD",
+   "symptom": "Restlessness",
+   "weight": 0.6
+  },
+  {
+   "disease": "ADHD",
+   "symptom": "Forgetfulness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Autism Spectrum Disorder",
+   "symptom": "Social communication difficulties",
+   "weight": 0.8
+  },
+  {
+   "disease": "Autism Spectrum Disorder",
+   "symptom": "Repetitive behaviors",
+   "weight": 0.7
+  },
+  {
+   "disease": "Autism Spectrum Disorder",
+   "symptom": "Sensory sensitivities",
+   "weight": 0.6
+  },
+  {
+   "disease": "Autism Spectrum Disorder",
+   "symptom": "Delayed speech",
+   "weight": 0.5
+  },
+  {
+   "disease": "PTSD",
+   "symptom": "Anxiety",
+   "weight": 0.7
+  },
+  {
+   "disease": "PTSD",
+   "symptom": "Flashbacks",
+   "weight": 0.8
+  },
+  {
+   "disease": "PTSD",
+   "symptom": "Nightmares",
+   "weight": 0.7
+  },
+  {
+   "disease": "PTSD",
+   "symptom": "Avoidance",
+   "weight": 0.6
+  },
+  {
+   "disease": "PTSD",
+   "symptom": "Hypervigilance",
+   "weight": 0.6
+  },
+  {
+   "disease": "PTSD",
+   "symptom": "Insomnia",
+   "weight": 0.5
+  },
+  {
+   "disease": "Bipolar Disorder",
+   "symptom": "Mood swings",
+   "weight": 0.9
+  },
+  {
+   "disease": "Bipolar Disorder",
+   "symptom": "Depression",
+   "weight": 0.6
+  },
+  {
+   "disease": "Bipolar Disorder",
+   "symptom": "Manic episodes",
+   "weight": 0.8
+  },
+  {
+   "disease": "Bipolar Disorder",
+   "symptom": "Irritability",
+   "weight": 0.5
+  },
+  {
+   "disease": "Bipolar Disorder",
+   "symptom": "Risky behavior",
+   "weight": 0.4
+  },
+  {
+   "disease": "Alzheimer's Disease",
+   "symptom": "Memory loss",
+   "weight": 0.9
+  },
+  {
+   "disease": "Alzheimer's Disease",
+   "symptom": "Confusion",
+   "weight": 0.7
+  },
+  {
+   "disease": "Alzheimer's Disease",
+   "symptom": "Difficulty speaking",
+   "weight": 0.5
+  },
+  {
+   "disease": "Alzheimer's Disease",
+   "symptom": "Disorientation",
+   "weight": 0.6
+  },
+  {
+   "disease": "Alzheimer's Disease",
+   "symptom": "Personality changes",
+   "weight": 0.5
+  },
+  {
+   "disease": "Parkinson's Disease",
+   "symptom": "Tremors",
+   "weight": 0.8
+  },
+  {
+   "disease": "Parkinson's Disease",
+   "symptom": "Muscle weakness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Parkinson's Disease",
+   "symptom": "Stiffness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Parkinson's Disease",
+   "symptom": "Balance problems",
+   "weight": 0.6
+  },
+  {
+   "disease": "Parkinson's Disease",
+   "symptom": "Slow movement",
+   "weight": 0.7
+  },
+  {
+   "disease": "Multiple Sclerosis",
+   "symptom": "Numbness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Multiple Sclerosis",
+   "symptom": "Tingling",
+   "weight": 0.6
+  },
+  {
+   "disease": "Multiple Sclerosis",
+   "symptom": "Muscle weakness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Multiple Sclerosis",
+   "symptom": "Vision problems",
+   "weight": 0.5
+  },
+  {
+   "disease": "Multiple Sclerosis",
+   "symptom": "Balance problems",
+   "weight": 0.5
+  },
+  {
+   "disease": "Multiple Sclerosis",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Epilepsy",
+   "symptom": "Seizure",
+   "weight": 0.9
+  },
+  {
+   "disease": "Epilepsy",
+   "symptom": "Loss of consciousness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Epilepsy",
+   "symptom": "Confusion",
+   "weight": 0.4
+  },
+  {
+   "disease": "Epilepsy",
+   "symptom": "Staring spells",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hepatitis B",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hepatitis B",
+   "symptom": "Abdominal pain",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hepatitis B",
+   "symptom": "Jaundice",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hepatitis B",
+   "symptom": "Loss of appetite",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hepatitis B",
+   "symptom": "Nausea",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hepatitis B",
+   "symptom": "Dark urine",
+   "weight": 0.4
+  },
+  {
+   "disease": "Chronic Kidney Disease",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Chronic Kidney Disease",
+   "symptom": "Swollen ankles",
+   "weight": 0.6
+  },
+  {
+   "disease": "Chronic Kidney Disease",
+   "symptom": "Frequent urination",
+   "weight": 0.4
+  },
+  {
+   "disease": "Chronic Kidney Disease",
+   "symptom": "Blood in urine",
+   "weight": 0.3
+  },
+  {
+   "disease": "Chronic Kidney Disease",
+   "symptom": "Nausea",
+   "weight": 0.3
+  },
+  {
+   "disease": "Chronic Kidney Disease",
+   "symptom": "Shortness of breath",
+   "weight": 0.3
+  },
+  {
+   "disease": "Glaucoma",
+   "symptom": "Blurred vision",
+   "weight": 0.5
+  },
+  {
+   "disease": "Glaucoma",
+   "symptom": "Eye pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Glaucoma",
+   "symptom": "Halos around lights",
+   "weight": 0.4
+  },
+  {
+   "disease": "Glaucoma",
+   "symptom": "Vision loss",
+   "weight": 0.5
+  },
+  {
+   "disease": "Cataracts",
+   "symptom": "Blurred vision",
+   "weight": 0.8
+  },
+  {
+   "disease": "Cataracts",
+   "symptom": "Double vision",
+   "weight": 0.4
+  },
+  {
+   "disease": "Cataracts",
+   "symptom": "Sensitivity to light",
+   "weight": 0.4
+  },
+  {
+   "disease": "Cataracts",
+   "symptom": "Night vision problems",
+   "weight": 0.5
+  },
+  {
+   "disease": "Tuberculosis",
+   "symptom": "Cough",
+   "weight": 0.8
+  },
+  {
+   "disease": "Tuberculosis",
+   "symptom": "Coughing blood",
+   "weight": 0.6
+  },
+  {
+   "disease": "Tuberculosis",
+   "symptom": "Fever",
+   "weight": 0.6
+  },
+  {
+   "disease": "Tuberculosis",
+   "symptom": "Night sweats",
+   "weight": 0.7
+  },
+  {
+   "disease": "Tuberculosis",
+   "symptom": "Weight loss",
+   "weight": 0.6
+  },
+  {
+   "disease": "Tuberculosis",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "HIV/AIDS",
+   "symptom": "Fever",
+   "weight": 0.4
+  },
+  {
+   "disease": "HIV/AIDS",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "HIV/AIDS",
+   "symptom": "Weight loss",
+   "weight": 0.5
+  },
+  {
+   "disease": "HIV/AIDS",
+   "symptom": "Swollen lymph nodes",
+   "weight": 0.4
+  },
+  {
+   "disease": "HIV/AIDS",
+   "symptom": "Night sweats",
+   "weight": 0.4
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Fever",
+   "weight": 0.9
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Chills",
+   "weight": 0.8
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Sweating",
+   "weight": 0.6
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Headache",
+   "weight": 0.5
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Nausea",
+   "weight": 0.4
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Vomiting",
+   "weight": 0.3
+  },
+  {
+   "disease": "Malaria",
+   "symptom": "Body aches",
+   "weight": 0.5
+  },
+  {
+   "disease": "Lyme Disease",
+   "symptom": "Fever",
+   "weight": 0.5
+  },
+  {
+   "disease": "Lyme Disease",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Lyme Disease",
+   "symptom": "Headache",
+   "weight": 0.4
+  },
+  {
+   "disease": "Lyme Disease",
+   "symptom": "Body aches",
+   "weight": 0.5
+  },
+  {
+   "disease": "Lyme Disease",
+   "symptom": "Rash",
+   "weight": 0.7
+  },
+  {
+   "disease": "Lyme Disease",
+   "symptom": "Joint pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hepatitis C",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Hepatitis C",
+   "symptom": "Jaundice",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hepatitis C",
+   "symptom": "Abdominal pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hepatitis C",
+   "symptom": "Loss of appetite",
+   "weight": 0.3
+  },
+  {
+   "disease": "Hepatitis C",
+   "symptom": "Nausea",
+   "weight": 0.3
+  },
+  {
+   "disease": "Hepatitis C",
+   "symptom": "Dark urine",
+   "weight": 0.3
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Leg pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Cold hands and feet",
+   "weight": 0.6
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Delayed wound healing",
+   "weight": 0.5
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Numbness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Weakness",
+   "weight": 0.3
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Diarrhea",
+   "weight": 0.9
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Abdominal pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Blood in stool",
+   "weight": 0.7
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Weight loss",
+   "weight": 0.6
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Mucus in stool",
+   "weight": 0.5
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Fever",
+   "weight": 0.3
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Bloating",
+   "weight": 0.8
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Diarrhea",
+   "weight": 0.7
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Abdominal pain",
+   "weight": 0.6
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Gas",
+   "weight": 0.5
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Weight loss",
+   "weight": 0.5
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Pale skin",
+   "weight": 0.3
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Rash",
+   "weight": 0.3
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Fatigue",
+   "weight": 0.7
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Easy bruising",
+   "weight": 0.7
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Easy bleeding",
+   "weight": 0.6
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Fever",
+   "weight": 0.5
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Pale skin",
+   "weight": 0.5
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Night sweats",
+   "weight": 0.4
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Weight loss",
+   "weight": 0.4
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Swollen lymph nodes",
+   "weight": 0.4
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Swollen lymph nodes",
+   "weight": 0.9
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Night sweats",
+   "weight": 0.7
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Weight loss",
+   "weight": 0.6
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Fever",
+   "weight": 0.6
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Itching",
+   "weight": 0.3
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Itching",
+   "weight": 0.9
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Rash",
+   "weight": 0.8
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Redness",
+   "weight": 0.8
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Dry skin",
+   "weight": 0.6
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Swelling",
+   "weight": 0.3
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Swelling",
+   "weight": 0.8
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Abdominal pain",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Pelvic pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Heartburn",
+   "weight": 0.3
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Swelling",
+   "weight": 0.5
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Difficulty swallowing",
+   "weight": 0.5
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Hoarseness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Neck pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Weight gain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Fatigue",
+   "weight": 0.4
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Increased thirst",
+   "weight": 0.4
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Frequent urination",
+   "weight": 0.3
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Blurred vision",
+   "weight": 0.2
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Difficulty breathing",
+   "weight": 0.9
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Swelling",
+   "weight": 0.9
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Rash",
+   "weight": 0.7
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Wheezing",
+   "weight": 0.7
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Itching",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Dizziness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Rapid pulse",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Fainting",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Nausea",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Pelvic pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Heavy menstrual bleeding",
+   "weight": 0.6
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Irregular periods",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Female sexual dysfunction",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Bloating",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Fatigue",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Back pain",
+   "weight": 0.3
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Painful urination",
+   "weight": 0.8
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Frequent urination",
+   "weight": 0.7
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Pelvic pain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Back pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Fever",
+   "weight": 0.4
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Chills",
+   "weight": 0.3
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Blood in urine",
+   "weight": 0.3
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Male sexual dysfunction",
+   "weight": 0.3
+  }
+ ]
+}

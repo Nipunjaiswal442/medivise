@@ -1,7 +1,3 @@
-import { diseases } from "./diseases";
-import { symptoms } from "./symptoms";
-import { medicines } from "./medicines";
-
 export const diseaseSymptomMappings = [
   // Common Cold
   { disease: "Common Cold", symptom: "Cough", weight: 0.8 },
@@ -497,6 +493,109 @@ export const diseaseSymptomMappings = [
   { disease: "Hepatitis C", symptom: "Loss of appetite", weight: 0.3 },
   { disease: "Hepatitis C", symptom: "Nausea", weight: 0.3 },
   { disease: "Hepatitis C", symptom: "Dark urine", weight: 0.3 },
+
+  // Diseases that previously had no symptom links and so could never be predicted.
+  // Weights are approximate demonstration values, like the rest of this file.
+
+  // Peripheral Artery Disease
+  { disease: "Peripheral Artery Disease", symptom: "Leg pain", weight: 0.9 },
+  { disease: "Peripheral Artery Disease", symptom: "Cold hands and feet", weight: 0.6 },
+  { disease: "Peripheral Artery Disease", symptom: "Delayed wound healing", weight: 0.5 },
+  { disease: "Peripheral Artery Disease", symptom: "Numbness", weight: 0.4 },
+  { disease: "Peripheral Artery Disease", symptom: "Weakness", weight: 0.3 },
+
+  // IBD
+  { disease: "IBD", symptom: "Diarrhea", weight: 0.9 },
+  { disease: "IBD", symptom: "Abdominal pain", weight: 0.8 },
+  { disease: "IBD", symptom: "Blood in stool", weight: 0.7 },
+  { disease: "IBD", symptom: "Weight loss", weight: 0.6 },
+  { disease: "IBD", symptom: "Mucus in stool", weight: 0.5 },
+  { disease: "IBD", symptom: "Fatigue", weight: 0.5 },
+  { disease: "IBD", symptom: "Fever", weight: 0.3 },
+
+  // Celiac Disease
+  { disease: "Celiac Disease", symptom: "Bloating", weight: 0.8 },
+  { disease: "Celiac Disease", symptom: "Diarrhea", weight: 0.7 },
+  { disease: "Celiac Disease", symptom: "Abdominal pain", weight: 0.6 },
+  { disease: "Celiac Disease", symptom: "Gas", weight: 0.5 },
+  { disease: "Celiac Disease", symptom: "Weight loss", weight: 0.5 },
+  { disease: "Celiac Disease", symptom: "Fatigue", weight: 0.5 },
+  { disease: "Celiac Disease", symptom: "Pale skin", weight: 0.3 },
+  { disease: "Celiac Disease", symptom: "Rash", weight: 0.3 },
+
+  // Leukemia
+  { disease: "Leukemia", symptom: "Fatigue", weight: 0.7 },
+  { disease: "Leukemia", symptom: "Easy bruising", weight: 0.7 },
+  { disease: "Leukemia", symptom: "Easy bleeding", weight: 0.6 },
+  { disease: "Leukemia", symptom: "Fever", weight: 0.5 },
+  { disease: "Leukemia", symptom: "Pale skin", weight: 0.5 },
+  { disease: "Leukemia", symptom: "Night sweats", weight: 0.4 },
+  { disease: "Leukemia", symptom: "Weight loss", weight: 0.4 },
+  { disease: "Leukemia", symptom: "Swollen lymph nodes", weight: 0.4 },
+
+  // Lymphoma
+  { disease: "Lymphoma", symptom: "Swollen lymph nodes", weight: 0.9 },
+  { disease: "Lymphoma", symptom: "Night sweats", weight: 0.7 },
+  { disease: "Lymphoma", symptom: "Weight loss", weight: 0.6 },
+  { disease: "Lymphoma", symptom: "Fever", weight: 0.6 },
+  { disease: "Lymphoma", symptom: "Fatigue", weight: 0.6 },
+  { disease: "Lymphoma", symptom: "Itching", weight: 0.3 },
+
+  // Dermatitis
+  { disease: "Dermatitis", symptom: "Itching", weight: 0.9 },
+  { disease: "Dermatitis", symptom: "Rash", weight: 0.8 },
+  { disease: "Dermatitis", symptom: "Redness", weight: 0.8 },
+  { disease: "Dermatitis", symptom: "Dry skin", weight: 0.6 },
+  { disease: "Dermatitis", symptom: "Swelling", weight: 0.3 },
+
+  // Hernia
+  { disease: "Hernia", symptom: "Swelling", weight: 0.8 },
+  { disease: "Hernia", symptom: "Abdominal pain", weight: 0.6 },
+  { disease: "Hernia", symptom: "Pelvic pain", weight: 0.4 },
+  { disease: "Hernia", symptom: "Heartburn", weight: 0.3 },
+
+  // Thyroid Nodule
+  { disease: "Thyroid Nodule", symptom: "Swelling", weight: 0.5 },
+  { disease: "Thyroid Nodule", symptom: "Difficulty swallowing", weight: 0.5 },
+  { disease: "Thyroid Nodule", symptom: "Hoarseness", weight: 0.5 },
+  { disease: "Thyroid Nodule", symptom: "Neck pain", weight: 0.4 },
+
+  // Metabolic Syndrome
+  { disease: "Metabolic Syndrome", symptom: "Weight gain", weight: 0.7 },
+  { disease: "Metabolic Syndrome", symptom: "Fatigue", weight: 0.4 },
+  { disease: "Metabolic Syndrome", symptom: "Increased thirst", weight: 0.4 },
+  { disease: "Metabolic Syndrome", symptom: "Frequent urination", weight: 0.3 },
+  { disease: "Metabolic Syndrome", symptom: "Blurred vision", weight: 0.2 },
+
+  // Anaphylaxis
+  { disease: "Anaphylaxis", symptom: "Difficulty breathing", weight: 0.9 },
+  { disease: "Anaphylaxis", symptom: "Swelling", weight: 0.9 },
+  { disease: "Anaphylaxis", symptom: "Rash", weight: 0.7 },
+  { disease: "Anaphylaxis", symptom: "Wheezing", weight: 0.7 },
+  { disease: "Anaphylaxis", symptom: "Itching", weight: 0.6 },
+  { disease: "Anaphylaxis", symptom: "Dizziness", weight: 0.6 },
+  { disease: "Anaphylaxis", symptom: "Rapid pulse", weight: 0.6 },
+  { disease: "Anaphylaxis", symptom: "Fainting", weight: 0.5 },
+  { disease: "Anaphylaxis", symptom: "Nausea", weight: 0.4 },
+
+  // Endometriosis
+  { disease: "Endometriosis", symptom: "Pelvic pain", weight: 0.9 },
+  { disease: "Endometriosis", symptom: "Heavy menstrual bleeding", weight: 0.6 },
+  { disease: "Endometriosis", symptom: "Irregular periods", weight: 0.4 },
+  { disease: "Endometriosis", symptom: "Female sexual dysfunction", weight: 0.4 },
+  { disease: "Endometriosis", symptom: "Bloating", weight: 0.4 },
+  { disease: "Endometriosis", symptom: "Fatigue", weight: 0.4 },
+  { disease: "Endometriosis", symptom: "Back pain", weight: 0.3 },
+
+  // Prostatitis
+  { disease: "Prostatitis", symptom: "Painful urination", weight: 0.8 },
+  { disease: "Prostatitis", symptom: "Frequent urination", weight: 0.7 },
+  { disease: "Prostatitis", symptom: "Pelvic pain", weight: 0.7 },
+  { disease: "Prostatitis", symptom: "Back pain", weight: 0.4 },
+  { disease: "Prostatitis", symptom: "Fever", weight: 0.4 },
+  { disease: "Prostatitis", symptom: "Chills", weight: 0.3 },
+  { disease: "Prostatitis", symptom: "Blood in urine", weight: 0.3 },
+  { disease: "Prostatitis", symptom: "Male sexual dysfunction", weight: 0.3 },
 ];
 
 export const diseaseMedicineMappings = [
@@ -840,23 +939,32 @@ export const diseaseMedicineMappings = [
   { disease: "Hepatitis C", medicine: "Sofosbuvir", confidence: 85 },
   { disease: "Hepatitis C", medicine: "Ledipasvir", confidence: 80 },
   { disease: "Hepatitis C", medicine: "Velpatasvir", confidence: 80 },
-];
 
-// Helper: build lookup maps from names to IDs after insertion
-export function buildMappings(
-  diseaseMap: Record<string, string>,
-  symptomMap: Record<string, string>,
-  medicineMap: Record<string, string>
-) {
-  const symptomLinks = diseaseSymptomMappings.map((m) => ({
-    diseaseId: diseaseMap[m.disease],
-    symptomId: symptomMap[m.symptom],
-    weight: m.weight,
-  }));
-  const medicineLinks = diseaseMedicineMappings.map((m) => ({
-    diseaseId: diseaseMap[m.disease],
-    medicineId: medicineMap[m.medicine],
-    confidence: m.confidence,
-  }));
-  return { symptomLinks, medicineLinks };
-}
+  // Diseases that previously had no treatment links (existing medicines only, except Epinephrine)
+  { disease: "Peripheral Artery Disease", medicine: "Atorvastatin", confidence: 75 },
+  { disease: "Peripheral Artery Disease", medicine: "Aspirin", confidence: 70 },
+  { disease: "Peripheral Artery Disease", medicine: "Clopidogrel", confidence: 65 },
+  { disease: "IBD", medicine: "Sulfasalazine", confidence: 70 },
+  { disease: "IBD", note: "Specialist gastroenterology referral; biologics and steroids are prescribed there" },
+  { disease: "Celiac Disease", note: "Strict lifelong gluten-free diet is the treatment" },
+  { disease: "Celiac Disease", medicine: "Iron supplements", confidence: 40 },
+  { disease: "Celiac Disease", medicine: "Vitamin D", confidence: 35 },
+  { disease: "Leukemia", note: "Urgent haematology/oncology referral; no primary-care medicine" },
+  { disease: "Lymphoma", note: "Urgent haematology/oncology referral; no primary-care medicine" },
+  { disease: "Dermatitis", medicine: "Hydrocortisone cream", confidence: 75 },
+  { disease: "Dermatitis", medicine: "Topical steroids", confidence: 70 },
+  { disease: "Dermatitis", medicine: "Moisturizers", confidence: 65 },
+  { disease: "Dermatitis", medicine: "Cetirizine", confidence: 40 },
+  { disease: "Hernia", note: "Surgical repair; urgent if irreducible or painful" },
+  { disease: "Thyroid Nodule", note: "Ultrasound and TSH; fine-needle aspiration if suspicious" },
+  { disease: "Metabolic Syndrome", medicine: "Atorvastatin", confidence: 60 },
+  { disease: "Metabolic Syndrome", medicine: "Metformin", confidence: 50 },
+  { disease: "Metabolic Syndrome", medicine: "Lisinopril", confidence: 50 },
+  { disease: "Anaphylaxis", medicine: "Epinephrine", confidence: 95 },
+  { disease: "Anaphylaxis", medicine: "Cetirizine", confidence: 40 },
+  { disease: "Endometriosis", medicine: "Ibuprofen", confidence: 65 },
+  { disease: "Endometriosis", medicine: "Oral contraceptives", confidence: 65 },
+  { disease: "Prostatitis", medicine: "Ciprofloxacin", confidence: 75 },
+  { disease: "Prostatitis", medicine: "Tamsulosin", confidence: 55 },
+  { disease: "Prostatitis", medicine: "Ibuprofen", confidence: 40 },
+];

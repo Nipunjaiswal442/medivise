@@ -1,8 +1,10 @@
+export type Role = 'physician' | 'nurse' | 'admin' | 'pharmacist';
+
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'physician' | 'nurse' | 'admin' | 'pharmacist';
+  role: Role;
   specialty: string | null;
   licenseNumber: string | null;
 }
@@ -10,19 +12,13 @@ export interface User {
 export interface LoginCredentials {
   email: string;
   password: string;
-  rememberMe: boolean;
 }
 
-export interface AuthResponse {
-  success: boolean;
-  message: string;
-  token: string;
-  user: User;
-}
-
-export interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+export interface SignupData {
+  email: string;
+  password: string;
+  name: string;
+  role: string;
+  specialty: string;
+  licenseNumber: string;
 }

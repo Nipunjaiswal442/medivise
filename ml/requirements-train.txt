@@ -1,0 +1,3 @@
+-r requirements.txt
+# Only needed to run train.py and to serve the trained Keras model.
+tensorflow>=2.16

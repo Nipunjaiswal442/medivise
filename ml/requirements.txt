@@ -1,4 +1,6 @@
-fastapi==0.104.0
-uvicorn==0.24.0
-pydantic==2.5.0
-numpy==1.24.0
+# Inference service. Ranges (not exact pins) so it installs on current Python versions:
+# numpy==1.24.0, as previously pinned, has no wheels for Python 3.12+ and fails to build.
+fastapi>=0.110,<1
+uvicorn>=0.27,<1
+pydantic>=2.5,<3
+numpy>=1.26

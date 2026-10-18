@@ -1,156 +1,91 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
-  updateProfile,
-  type User as FirebaseUser,
-} from 'firebase/auth';
-import { auth } from '@/config/firebase';
-import type { User, LoginCredentials } from '@/types/auth';
-
-// ─── Context value ───────────────────────────────────────────────────────────
+import { useAuthActions, useAuthToken, useConvexAuth } from '@convex-dev/auth/react';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/api';
+import type { LoginCredentials, SignupData, User } from '@/types/auth';
 
 interface AuthContextValue {
   user: User | null;
-  firebaseUser: FirebaseUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  /** The Convex Auth JWT, for calls to our own /api functions. */
+  token: string | null;
   login: (credentials: LoginCredentials) => Promise<void>;
-  signup: (data: {
-    email: string;
-    password: string;
-    name: string;
-    role: string;
-    specialty: string;
-    licenseNumber: string;
-  }) => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
+  signup: (data: SignupData) => Promise<void>;
+  /** Emails a 6-digit reset code (requires AUTH_RESEND_KEY on the Convex deployment). */
+  requestPasswordReset: (email: string) => Promise<void>;
+  confirmPasswordReset: (email: string, code: string, newPassword: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/** Convert a Firebase user + stored metadata into our app User type */
-function toAppUser(fbUser: FirebaseUser): User {
-  // Read extra profile data from localStorage (set during signup)
-  const stored = localStorage.getItem(`medivise_profile_${fbUser.uid}`);
-  const extra = stored ? JSON.parse(stored) : {};
-
-  return {
-    id: fbUser.uid,
-    email: fbUser.email ?? '',
-    name: fbUser.displayName ?? extra.name ?? 'Doctor',
-    role: extra.role ?? 'physician',
-    specialty: extra.specialty ?? null,
-    licenseNumber: extra.licenseNumber ?? null,
-  };
-}
-
-// ─── Provider ────────────────────────────────────────────────────────────────
-
+/** Authentication through Convex Auth (email + password). The profile lives in the Convex users table. */
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading: authLoading, isAuthenticated } = useConvexAuth();
+  const { signIn, signOut } = useAuthActions();
+  const token = useAuthToken();
+  const me = useQuery(api.functions.users.me, isAuthenticated ? {} : 'skip');
 
-  // Listen to Firebase auth state
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
-      if (fbUser) {
-        setFirebaseUser(fbUser);
-        setUser(toAppUser(fbUser));
-      } else {
-        setFirebaseUser(null);
-        setUser(null);
-      }
-      setIsLoading(false);
-    });
+  const login = useCallback(
+    async ({ email, password }: LoginCredentials) => {
+      await signIn('password', { flow: 'signIn', email: email.trim().toLowerCase(), password });
+    },
+    [signIn],
+  );
 
-    return unsubscribe;
-  }, []);
-
-  // ── Login ──────────────────────────────────────────────────────────────────
-  const login = useCallback(async (credentials: LoginCredentials) => {
-    const { user: fbUser } = await signInWithEmailAndPassword(
-      auth,
-      credentials.email,
-      credentials.password,
-    );
-    setFirebaseUser(fbUser);
-    setUser(toAppUser(fbUser));
-  }, []);
-
-  // ── Signup ─────────────────────────────────────────────────────────────────
   const signup = useCallback(
-    async (data: {
-      email: string;
-      password: string;
-      name: string;
-      role: string;
-      specialty: string;
-      licenseNumber: string;
-    }) => {
-      const { user: fbUser } = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
-
-      // Set display name on Firebase profile
-      await updateProfile(fbUser, { displayName: data.name });
-
-      // Store extra profile fields in localStorage (keyed by uid)
-      const profileData = {
-        name: data.name,
+    async (data: SignupData) => {
+      await signIn('password', {
+        flow: 'signUp',
+        email: data.email.trim().toLowerCase(),
+        password: data.password,
+        name: data.name.trim(),
         role: data.role,
         specialty: data.specialty,
-        licenseNumber: data.licenseNumber,
-      };
-      localStorage.setItem(
-        `medivise_profile_${fbUser.uid}`,
-        JSON.stringify(profileData),
-      );
-
-      setFirebaseUser(fbUser);
-      setUser(toAppUser(fbUser));
+        licenseNumber: data.licenseNumber.trim(),
+      });
     },
-    [],
+    [signIn],
   );
 
-  // ── Reset password ─────────────────────────────────────────────────────────
-  const resetPassword = useCallback(async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
-  }, []);
-
-  // ── Logout ─────────────────────────────────────────────────────────────────
-  const logout = useCallback(async () => {
-    await signOut(auth);
-    setFirebaseUser(null);
-    setUser(null);
-  }, []);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        firebaseUser,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        signup,
-        resetPassword,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const requestPasswordReset = useCallback(
+    async (email: string) => {
+      await signIn('password', { flow: 'reset', email: email.trim().toLowerCase() });
+    },
+    [signIn],
   );
+
+  const confirmPasswordReset = useCallback(
+    async (email: string, code: string, newPassword: string) => {
+      await signIn('password', { flow: 'reset-verification', email: email.trim().toLowerCase(), code: code.trim(), newPassword });
+    },
+    [signIn],
+  );
+
+  const user: User | null = useMemo(
+    () =>
+      me
+        ? { id: me._id, email: me.email, name: me.name, role: me.role, specialty: me.specialty, licenseNumber: me.licenseNumber }
+        : null,
+    [me],
+  );
+
+  const value: AuthContextValue = {
+    user,
+    isAuthenticated: isAuthenticated && !!user,
+    // Signed in but the profile query has not answered yet still counts as loading
+    isLoading: authLoading || (isAuthenticated && me === undefined),
+    token,
+    login,
+    signup,
+    requestPasswordReset,
+    confirmPasswordReset,
+    logout: signOut,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = (): AuthContextValue => {

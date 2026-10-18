@@ -10,12 +10,12 @@ import {
   AlertCircleIcon,
 } from '@/components/ui/Icons';
 import { InlineSpinner } from '@/components/ui/Spinner';
+import { errorMessage } from '@/convex/client';
 import styles from './LoginPage.module.css';
 
 interface FormState {
   email: string;
   password: string;
-  rememberMe: boolean;
 }
 
 interface FormErrors {
@@ -29,7 +29,7 @@ export default function LoginPage() {
   const location = useLocation();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  const [form, setForm] = useState<FormState>({ email: '', password: '', rememberMe: false });
+  const [form, setForm] = useState<FormState>({ email: '', password: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,8 +59,8 @@ export default function LoginPage() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -75,26 +75,16 @@ export default function LoginPage() {
 
     try {
       await login(form);
-      navigate(from, { replace: true });
+      // Navigation happens in the effect above once the session is active.
     } catch (err: unknown) {
-      const code = (err as { code?: string })?.code ?? '';
-      let message: string;
-      switch (code) {
-        case 'auth/invalid-credential':
-        case 'auth/wrong-password':
-        case 'auth/user-not-found':
-          message = 'Invalid email or password.';
-          break;
-        case 'auth/too-many-requests':
-          message = 'Too many failed attempts. Please try again later.';
-          break;
-        case 'auth/user-disabled':
-          message = 'This account has been disabled.';
-          break;
-        default:
-          message = 'Unable to sign in. Please check your credentials.';
-      }
-      setErrors({ general: message });
+      const message = errorMessage(err, '');
+      setErrors({
+        general: /valid email/i.test(message)
+          ? message
+          : /fetch|network/i.test(message)
+            ? 'Cannot reach the server. Check your connection and try again.'
+            : 'Invalid email or password.',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -225,18 +215,6 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Remember me */}
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                name="rememberMe"
-                checked={form.rememberMe}
-                onChange={handleChange}
-                className={styles.checkbox}
-              />
-              <span className={styles.checkboxText}>Remember me for 7 days</span>
-            </label>
-
             {/* Submit */}
             <button
               type="submit"
@@ -261,7 +239,7 @@ export default function LoginPage() {
 
           <footer className={styles.formFooter}>
             <p>
-              Protected under HIPAA. All access is logged and monitored.
+              For authorised clinical staff. Decision support only: verify every suggestion.
             </p>
             <div className={styles.footerLinks}>
               <a href="#">Privacy Policy</a>

@@ -13,6 +13,7 @@ import PatientsPage from '@/pages/PatientsPage';
 import ConsultationPage from '@/pages/ConsultationPage';
 import NewsPage from '@/pages/NewsPage';
 import PredictionPage from '@/pages/PredictionPage';
+import AppointmentsPage from '@/pages/AppointmentsPage';
 
 export default function App() {
   return (
@@ -37,13 +38,15 @@ export default function App() {
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/patients" element={<PatientsPage />} />
+              <Route path="/appointments" element={<AppointmentsPage />} />
               <Route path="/consultation" element={<ConsultationPage />} />
               <Route path="/prediction" element={<PredictionPage />} />
               <Route path="/news" element={<NewsPage />} />
             </Route>
 
             {/* Fallback */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
