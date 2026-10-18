@@ -135,4 +135,7 @@ export const medicines = [
   { name: "Sofosbuvir" },
   { name: "Ledipasvir" },
   { name: "Velpatasvir" },
+
+  // Standard adult intramuscular dose for anaphylaxis (1 mg/mL, anterolateral thigh).
+  { name: "Epinephrine", description: "First-line emergency treatment for anaphylaxis", dosage: "0.3 mg IM (adult auto-injector); 0.15 mg for children 15-30 kg", frequency: "Repeat every 5-15 minutes if no improvement", duration: "Emergency use", contraindications: "No absolute contraindication in anaphylaxis" },
 ];

@@ -1,31 +1,22 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError } from "convex/values";
-import type { QueryCtx, MutationCtx } from "../_generated/server";
+import type { Doc } from "../_generated/dataModel";
+import type { MutationCtx, QueryCtx } from "../_generated/server";
 
 type Ctx = QueryCtx | MutationCtx;
 
-/** Throws unless the request carries a valid Firebase ID token (see convex/auth.config.ts). */
-export async function requireIdentity(ctx: Pick<Ctx, "auth">) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) {
-    throw new ConvexError("Unauthenticated");
-  }
-  return identity;
-}
-
-/** Looks up the Convex user row that belongs to a Firebase uid. */
-export async function findUserByFirebaseUid(ctx: Pick<Ctx, "db">, firebaseUid: string) {
-  return await ctx.db
-    .query("users")
-    .withIndex("firebaseUid", (q) => q.eq("firebaseUid", firebaseUid))
-    .unique();
-}
-
-/** The signed-in user's row. Throws if signed out, or if the profile has not been created yet. */
-export async function requireUser(ctx: Ctx) {
-  const identity = await requireIdentity(ctx);
-  const user = await findUserByFirebaseUid(ctx, identity.subject);
-  if (!user) {
-    throw new ConvexError("User profile not found. Sign out and back in to create it.");
-  }
+/** The signed-in clinician's user row. Throws when signed out (Convex Auth session). */
+export async function requireUser(ctx: Ctx): Promise<Doc<"users">> {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) throw new ConvexError("Unauthenticated");
+  const user = await ctx.db.get(userId);
+  if (!user) throw new ConvexError("Unauthenticated");
   return user;
+}
+
+/** Loads a patient and checks it belongs to the user. */
+export async function requireOwnPatient(ctx: Ctx, user: Doc<"users">, patientId: Doc<"patients">["_id"]) {
+  const patient = await ctx.db.get(patientId);
+  if (!patient || patient.userId !== user._id) throw new ConvexError("Patient not found");
+  return patient;
 }

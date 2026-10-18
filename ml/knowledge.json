@@ -2034,6 +2034,386 @@
    "disease": "Hepatitis C",
    "symptom": "Dark urine",
    "weight": 0.3
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Leg pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Cold hands and feet",
+   "weight": 0.6
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Delayed wound healing",
+   "weight": 0.5
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Numbness",
+   "weight": 0.4
+  },
+  {
+   "disease": "Peripheral Artery Disease",
+   "symptom": "Weakness",
+   "weight": 0.3
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Diarrhea",
+   "weight": 0.9
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Abdominal pain",
+   "weight": 0.8
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Blood in stool",
+   "weight": 0.7
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Weight loss",
+   "weight": 0.6
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Mucus in stool",
+   "weight": 0.5
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "IBD",
+   "symptom": "Fever",
+   "weight": 0.3
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Bloating",
+   "weight": 0.8
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Diarrhea",
+   "weight": 0.7
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Abdominal pain",
+   "weight": 0.6
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Gas",
+   "weight": 0.5
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Weight loss",
+   "weight": 0.5
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Fatigue",
+   "weight": 0.5
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Pale skin",
+   "weight": 0.3
+  },
+  {
+   "disease": "Celiac Disease",
+   "symptom": "Rash",
+   "weight": 0.3
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Fatigue",
+   "weight": 0.7
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Easy bruising",
+   "weight": 0.7
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Easy bleeding",
+   "weight": 0.6
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Fever",
+   "weight": 0.5
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Pale skin",
+   "weight": 0.5
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Night sweats",
+   "weight": 0.4
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Weight loss",
+   "weight": 0.4
+  },
+  {
+   "disease": "Leukemia",
+   "symptom": "Swollen lymph nodes",
+   "weight": 0.4
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Swollen lymph nodes",
+   "weight": 0.9
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Night sweats",
+   "weight": 0.7
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Weight loss",
+   "weight": 0.6
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Fever",
+   "weight": 0.6
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Fatigue",
+   "weight": 0.6
+  },
+  {
+   "disease": "Lymphoma",
+   "symptom": "Itching",
+   "weight": 0.3
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Itching",
+   "weight": 0.9
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Rash",
+   "weight": 0.8
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Redness",
+   "weight": 0.8
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Dry skin",
+   "weight": 0.6
+  },
+  {
+   "disease": "Dermatitis",
+   "symptom": "Swelling",
+   "weight": 0.3
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Swelling",
+   "weight": 0.8
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Abdominal pain",
+   "weight": 0.6
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Pelvic pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Hernia",
+   "symptom": "Heartburn",
+   "weight": 0.3
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Swelling",
+   "weight": 0.5
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Difficulty swallowing",
+   "weight": 0.5
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Hoarseness",
+   "weight": 0.5
+  },
+  {
+   "disease": "Thyroid Nodule",
+   "symptom": "Neck pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Weight gain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Fatigue",
+   "weight": 0.4
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Increased thirst",
+   "weight": 0.4
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Frequent urination",
+   "weight": 0.3
+  },
+  {
+   "disease": "Metabolic Syndrome",
+   "symptom": "Blurred vision",
+   "weight": 0.2
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Difficulty breathing",
+   "weight": 0.9
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Swelling",
+   "weight": 0.9
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Rash",
+   "weight": 0.7
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Wheezing",
+   "weight": 0.7
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Itching",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Dizziness",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Rapid pulse",
+   "weight": 0.6
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Fainting",
+   "weight": 0.5
+  },
+  {
+   "disease": "Anaphylaxis",
+   "symptom": "Nausea",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Pelvic pain",
+   "weight": 0.9
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Heavy menstrual bleeding",
+   "weight": 0.6
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Irregular periods",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Female sexual dysfunction",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Bloating",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Fatigue",
+   "weight": 0.4
+  },
+  {
+   "disease": "Endometriosis",
+   "symptom": "Back pain",
+   "weight": 0.3
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Painful urination",
+   "weight": 0.8
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Frequent urination",
+   "weight": 0.7
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Pelvic pain",
+   "weight": 0.7
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Back pain",
+   "weight": 0.4
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Fever",
+   "weight": 0.4
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Chills",
+   "weight": 0.3
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Blood in urine",
+   "weight": 0.3
+  },
+  {
+   "disease": "Prostatitis",
+   "symptom": "Male sexual dysfunction",
+   "weight": 0.3
   }
  ]
 }

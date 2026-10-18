@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import type { MutationCtx } from "../_generated/server";
 import { mutation, query } from "../_generated/server";
-import { requireIdentity, requireUser } from "../lib/auth";
+import { requireUser } from "../lib/auth";
 
 /** Editing the clinical knowledge base is limited to administrators. */
 async function requireAdmin(ctx: MutationCtx) {
@@ -15,7 +15,7 @@ async function requireAdmin(ctx: MutationCtx) {
 export const getDiseases = query({
   args: {},
   handler: async (ctx) => {
-    await requireIdentity(ctx);
+    await requireUser(ctx);
     return await ctx.db.query("diseases").collect();
   },
 });
@@ -23,7 +23,7 @@ export const getDiseases = query({
 export const getDiseaseById = query({
   args: { id: v.id("diseases") },
   handler: async (ctx, args) => {
-    await requireIdentity(ctx);
+    await requireUser(ctx);
     return await ctx.db.get(args.id);
   },
 });
@@ -31,7 +31,7 @@ export const getDiseaseById = query({
 export const getSymptoms = query({
   args: {},
   handler: async (ctx) => {
-    await requireIdentity(ctx);
+    await requireUser(ctx);
     return await ctx.db.query("symptoms").collect();
   },
 });
@@ -39,7 +39,7 @@ export const getSymptoms = query({
 export const getDiseaseSymptoms = query({
   args: { diseaseId: v.id("diseases") },
   handler: async (ctx, args) => {
-    await requireIdentity(ctx);
+    await requireUser(ctx);
     return await ctx.db
       .query("diseaseSymptoms")
       .withIndex("diseaseId", (q) => q.eq("diseaseId", args.diseaseId))
@@ -50,7 +50,7 @@ export const getDiseaseSymptoms = query({
 export const getDiseaseMedicines = query({
   args: { diseaseId: v.id("diseases") },
   handler: async (ctx, args) => {
-    await requireIdentity(ctx);
+    await requireUser(ctx);
     return await ctx.db
       .query("diseaseMedicines")
       .withIndex("diseaseId", (q) => q.eq("diseaseId", args.diseaseId))
