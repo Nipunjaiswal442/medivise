@@ -3,10 +3,10 @@
  * Uses the small rule tables in convex/data/drugSafety.ts - a screening aid, not a complete
  * interaction checker. "No warnings" never means a combination is safe.
  */
-import { allergyClassAliases, allergyClasses, interactionRules } from "../data/drugSafety";
+import { allergyClassAliases, allergyClasses, interactionRules, pregnancyRules, renalRules } from "../data/drugSafety";
 
 export interface SafetyWarning {
-  kind: "allergy" | "interaction";
+  kind: "allergy" | "interaction" | "pregnancy" | "renal";
   severity: "major" | "moderate";
   drugs: string[];
   message: string;
@@ -72,14 +72,64 @@ export function checkInteractions(current: string[], proposed: string[] = []): S
   return warnings;
 }
 
+export interface PatientSafetyContext {
+  pregnant?: boolean;
+  /** Most recent eGFR, mL/min/1.73m2. */
+  egfr?: number;
+}
+
+/** Pregnancy and kidney-function contraindications. */
+export function checkContraindications(drugs: string[], context: PatientSafetyContext): SafetyWarning[] {
+  const warnings: SafetyWarning[] = [];
+  for (const drug of drugs) {
+    const d = lower(drug);
+    if (context.pregnant) {
+      for (const rule of pregnancyRules) {
+        if (rule.match.some((f) => d.includes(f))) {
+          warnings.push({ kind: "pregnancy", severity: rule.severity, drugs: [drug], message: `${drug} in pregnancy: ${rule.message}` });
+          break;
+        }
+      }
+    }
+    if (context.egfr !== undefined) {
+      // the strictest threshold that applies wins
+      const rule = renalRules
+        .filter((r) => context.egfr! < r.belowEgfr && r.match.some((f) => d.includes(f)))
+        .sort((a, b) => a.belowEgfr - b.belowEgfr)[0];
+      if (rule) {
+        warnings.push({ kind: "renal", severity: rule.severity, drugs: [drug], message: `${drug} with eGFR ${context.egfr}: ${rule.message}` });
+      }
+    }
+  }
+  return warnings;
+}
+
+/** Pregnancy status and latest eGFR as recorded on a patient. */
+export function patientSafetyContext(p: {
+  condition?: string;
+  chronicConditions?: string[];
+  notes?: string;
+  labResults?: { test: string; value: string; date: string }[];
+}): PatientSafetyContext {
+  const text = [p.condition, ...(p.chronicConditions ?? []), p.notes].filter(Boolean).join(" ");
+  const pregnant = /\bpregnan(t|cy)\b/i.test(text) && !/not pregnant|post-?partum|pregnancy test (was )?negative|negative pregnancy/i.test(text);
+  const egfrLabs = (p.labResults ?? [])
+    .filter((l) => /egfr/i.test(l.test) && Number.isFinite(parseFloat(l.value)))
+    .sort((a, b) => b.date.localeCompare(a.date));
+  return { pregnant, egfr: egfrLabs.length ? parseFloat(egfrLabs[0].value) : undefined };
+}
+
 export function screenMedications(args: {
   current: string[];
   proposed?: string[];
   allergies: { substance: string; reaction?: string }[];
+  context?: PatientSafetyContext;
 }): SafetyWarning[] {
   const proposed = args.proposed ?? [];
   const toCheck = proposed.length > 0 ? proposed : args.current;
-  return [...checkAllergies(toCheck, args.allergies), ...checkInteractions(args.current, proposed)].sort(
-    (a, b) => (a.severity === b.severity ? 0 : a.severity === "major" ? -1 : 1),
-  );
+  return [
+    ...checkAllergies(toCheck, args.allergies),
+    ...checkContraindications(toCheck, args.context ?? {}),
+    ...checkInteractions(args.current, proposed),
+  ].sort((a, b) => (a.severity === b.severity ? 0 : a.severity === "major" ? -1 : 1));
 }

@@ -1,67 +1,89 @@
 # Medivise — Setup & Deployment
 
-Three pieces: a **Convex** backend (`convex/`), a **React** frontend (`frontend/`) and an optional
-**Python** inference service (`ml/`). Login is Firebase Auth; Convex verifies the Firebase ID token.
+Four pieces:
 
-> **Status of these steps.** Verified by running them: the Convex functions (typecheck + 16
-> `convex-test` tests, including auth and per-user isolation), the Python service (6 pytest tests,
-> plus training and serving the Keras model), and the frontend typecheck, build and a browser load.
-> **Not** verified, because they need your accounts: `npx convex dev`/`deploy` against a real
-> Convex project, a real Firebase sign-in being accepted by Convex, and a Vercel deploy. If one
-> of those fails, see [Troubleshooting](#troubleshooting).
+| Piece | Where | Runs on |
+|-------|-------|---------|
+| Database, functions, auth, file storage, search | `convex/` | Convex |
+| AI assistant API (`/api/chat`, `/api/ingest`, `/api/status`) | `api/`, `server/` | Vercel Functions (locally: `npm run dev:api`) |
+| Web app | `frontend/` | Vercel (static) |
+| Optional inference service | `ml/` | anywhere public (optional) |
+
+> **Status of these steps.** Verified here by running them: Convex typecheck and 29
+> `convex-test` tests (auth, per-clinician isolation, sample data, retrieval, appointments,
+> documents, prediction, medication safety); 10 end-to-end tests of the assistant API against a
+> scripted Claude endpoint and a convex-test backend; the frontend typecheck, production build
+> and a browser walkthrough of every page; 6 pytest tests for `ml/`; a local `vercel build`
+> (CLI 64.5.0) whose compiled `/api` functions were then run against the same mock services.
+> **Not verified**, because they need your accounts: `npx convex dev`/`deploy` against a real
+> Convex project, `npx @convex-dev/auth`, a real Claude API call with your key, and an actual
+> Vercel deployment. If one of those fails, see [Troubleshooting](#troubleshooting).
 
 ## Prerequisites
 
-- Node.js 18+ (tested on 22) and npm
-- Python 3.9+ (only for `ml/`)
-- A free Convex account — <https://dashboard.convex.dev>
-- The Firebase project in `frontend/src/config/firebase.ts` (`medivise-45810`) with
-  **Email/Password** sign-in enabled (Firebase console → Authentication → Sign-in method)
-
-No global installs are needed: the Convex CLI comes from the repo's `package.json`.
+- Node.js 20+ (tested on 22) and npm
+- A free Convex account: <https://dashboard.convex.dev>
+- For the AI assistant: an Anthropic API key (<https://console.anthropic.com>)
+- Python 3.9+ only for `ml/`
 
 ## 1. Convex backend (development deployment)
 
-Run from the **repository root**:
+From the **repository root**:
 
 ```bash
 npm install
 
-# First run opens the browser to log in, then creates a project (name it "medivise") and a
-# *development* deployment. It writes CONVEX_DEPLOYMENT and CONVEX_URL to .env.local, pushes
-# convex/ and keeps watching. Press Ctrl+C to stop; use `npx convex dev --once` to push once.
+# First run logs in, creates a project and a *development* deployment, writes CONVEX_DEPLOYMENT
+# and CONVEX_URL to .env.local, pushes convex/ and keeps watching. Ctrl+C stops it.
 npx convex dev
 
-# In a second terminal: load the medical knowledge base (84 diseases, 162 symptoms, 131 medicines)
-npm run seed
+# In a second terminal, once:
+npx @convex-dev/auth     # Convex Auth keys: sets JWT_PRIVATE_KEY, JWKS and SITE_URL on the deployment
+npm run seed             # medical knowledge base (84 diseases, 162 symptoms, 135 medicines)
 ```
 
-`npm run seed` should print `seeded: true` and `skippedLinks: []`. It refuses to run twice;
-to reload use `npx convex run functions/seed:seedDatabase '{"reset": true}'` (patients,
-consultations and predictions are never touched).
+`npm run seed` prints `seeded: true` and refuses to run twice; to reload the knowledge base use
+`npx convex run functions/seed:seedDatabase '{"reset": true}'` (patients and appointments are
+never touched). When `npx @convex-dev/auth` asks for the site URL, use `http://localhost:5173`.
+If the CLI does not work for you, the manual steps are at <https://labs.convex.dev/auth/setup/manual>.
 
-Copy the URL from `.env.local` (`CONVEX_URL=https://<name>.convex.cloud`).
+Optional Convex variables (`npx convex env set NAME value`):
 
-> Not valid, although earlier versions of these docs said so: `npx convex init` does not exist,
-> and `npx convex deploy` targets **production** — use `npx convex dev` first.
+| Variable | Purpose |
+|----------|---------|
+| `AUTH_RESEND_KEY` | Enables "Forgot password" (6-digit code by email through [Resend](https://resend.com)). Without it the page says email is not configured. |
+| `AUTH_EMAIL_FROM` | Sender, e.g. `Medivise <no-reply@your-domain>` (default: Resend's test sender, which only delivers to your own address). |
+| `ML_SERVICE_URL` | Optional Python service (section 4). |
 
-## 2. Frontend
+## 2. AI assistant API (local)
+
+```bash
+echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env    # repo root; .env is git-ignored
+npm run dev:api                               # http://localhost:3001
+```
+
+`dev:api` reads `ANTHROPIC_API_KEY` and `CONVEX_URL` from the shell, `.env.local` (written by
+`npx convex dev`) or `.env`. It prints whether the assistant is enabled. Without a key the rest of
+the app works and the assistant pages explain how to activate it.
+
+## 3. Frontend
 
 ```bash
 cd frontend
-cp .env.example .env        # then set VITE_CONVEX_URL to the URL from step 1
+cp .env.example .env        # set VITE_CONVEX_URL to CONVEX_URL from ../.env.local
 npm install
-npm run dev                 # http://localhost:5173
+npm run dev                 # http://localhost:5173 — /api is proxied to :3001
 ```
 
-Create an account on the Sign-up page, sign in, and open **Health Prediction**.
-Without `VITE_CONVEX_URL` the app still loads, but patients and predictions show errors.
+Sign up, then click **Load sample patients** (Dashboard, Appointments, Patients or Settings).
+It creates 20 fictional patients with full records and a week of appointments (8 today) for
+the signed-in clinician. Clicking it again updates the same records instead of duplicating
+them; a patient you created earlier with the same name is completed rather than duplicated.
 
-## 3. ML service (optional)
+## 4. ML service (optional)
 
-The app works without it: when `ML_SERVICE_URL` is unset, unreachable or returns nothing
-recognisable, Convex uses its built-in scorer. The response says which one answered
-(`source: "ml-service" | "knowledge-base"`).
+The app does not need it: the built-in predictor runs inside Convex. When `ML_SERVICE_URL` is
+set and answers within 4 s, its ranking is used instead (the result says which one answered).
 
 ```bash
 cd ml
@@ -70,100 +92,102 @@ pip install -r requirements.txt
 python serve.py                                        # http://127.0.0.1:8000
 ```
 
-```bash
-curl http://localhost:8000/health
-curl -X POST http://localhost:8000/predict -H "Content-Type: application/json" \
-  -d '{"symptoms":["fever","cough"],"age":45,"gender":"Male"}'
-```
+A cloud Convex deployment **cannot reach `http://localhost:8000`**. Deploy `ml/` somewhere public
+(start command `uvicorn serve:app --host 0.0.0.0 --port $PORT`) and run
+`npx convex env set ML_SERVICE_URL https://...`. The service has no authentication and receives
+symptoms, age and sex only. `ml/knowledge.json` is generated from the Convex data: after editing
+`convex/data/*`, run `npm run export:ml` and commit the result (CI checks this). `python train.py`
+(with `requirements-train.txt`) trains an optional Keras model on **synthetic** data; its
+accuracy is not a clinical metric.
 
-The service reads `ml/knowledge.json`, which is generated from the Convex seed data. If you edit
-`convex/data/*`, run `npm run export:ml` from the root and commit the result (CI checks this).
+## 5. Production (Vercel + Convex)
 
-### Connecting it to Convex
-
-A cloud Convex deployment **cannot reach `http://localhost:8000`** on your computer. Either:
-
-- leave `ML_SERVICE_URL` unset (the built-in scorer is used), or
-- deploy `ml/` somewhere public (Render, Railway, Fly.io, ...; start command
-  `uvicorn serve:app --host 0.0.0.0 --port $PORT`) and run
-  `npx convex env set ML_SERVICE_URL https://your-ml-service.example.com`, or
-- for a quick test, expose your local service with a tunnel (cloudflared/ngrok) and use that URL.
-
-The service has no authentication and receives symptoms, age and gender only (no names or ids).
-Add a shared secret before exposing it beyond a demo.
-
-### Training the Keras model (optional)
+### Convex production deployment
 
 ```bash
-cd ml
-pip install -r requirements-train.txt     # installs TensorFlow (large)
-python train.py                           # writes ml/model/disease_model.keras
-python serve.py                           # /health now reports "model": "keras"
-```
-
-`serve.py` loads the trained model automatically when it matches `knowledge.json`.
-**The training data is synthetic**, generated from the same hand-written weights, so the printed
-accuracy (about 0.83 here) only shows the network re-learning those weights. It is not a clinical
-metric.
-
-## 4. Production
-
-```bash
-# Convex production deployment (asks for confirmation)
-npx convex deploy
+npx convex deploy                                   # asks for confirmation
+npx @convex-dev/auth --prod                         # auth keys for production; site URL = your Vercel URL
 npx convex run --prod functions/seed:seedDatabase
-npx convex env set --prod ML_SERVICE_URL https://...      # only if you run the ML service
-
-# Frontend (from the repo root; vercel.json builds ./frontend)
-npm install -g vercel
-vercel --prod
 ```
 
-In the Vercel project settings set `VITE_CONVEX_URL` to the **production** Convex URL
-(Convex dashboard → your project → Production → Settings) and redeploy. Then add your Vercel domain in
-Firebase console → Authentication → Settings → **Authorized domains**, otherwise sign-in fails
-with `auth/unauthorized-domain`.
+### Vercel
+
+Import the repository in Vercel (or run `vercel --prod` from the repo root). `vercel.json`
+already configures the install and build commands, the `api/` functions and the SPA routing.
+In **Project → Settings → Environment Variables** add:
+
+| Variable | Required | Value |
+|----------|----------|-------|
+| `VITE_CONVEX_URL` | yes | Production Convex URL (`https://<name>.convex.cloud`; Convex dashboard → Production → Settings). Used by the web app at build time and by `/api` at runtime. |
+| `ANTHROPIC_API_KEY` | for the assistant | Your Anthropic API key. Only the `/api` functions read it; it is never sent to the browser. |
+| `ANTHROPIC_MODEL` | no | Default `claude-opus-5-5`. |
+| `ANTHROPIC_EFFORT` | no | `low`, `medium` (default), `high`, `xhigh` or `max`: more effort is slower and costs more tokens. |
+| `CONVEX_DEPLOY_KEY` | no | Production deploy key (Convex dashboard → Settings). When set, each Vercel build also deploys `convex/`. Keep `VITE_CONVEX_URL` (or `CONVEX_URL`) set as well: the `/api` functions need the URL at runtime. |
+
+Apply them to **Production** (and **Preview** if you use previews), then **redeploy**: Vercel only
+reads environment variables at build/deploy time. In the app, **Settings → AI Assistant** shows
+whether the key is configured and warns when the server is missing the Convex URL. `/api/chat` can run for up to 120 s
+(`vercel.json`), which needs fluid compute (enabled in `vercel.json`) or a plan that allows it.
 
 ### Making an administrator
 
-Self-registration can never create an administrator. In the Convex dashboard open
-**Data → users**, and change the user's `role` to `admin`. Only administrators can edit the
-knowledge base through the `diseases:create*` / `link*` mutations.
+Sign-up can never create an administrator. In the Convex dashboard open **Data → users** and
+set the user's `role` to `admin`. Only administrators can edit the knowledge base through the
+`diseases:create*` / `link*` mutations.
+
+## How the assistant works
+
+- The browser sends the question and its Convex auth token to `/api/chat`. The function calls
+  Convex **as that clinician**, so it can only read that clinician's patients.
+- Retrieval: each patient record is split into sections (summary, medications, labs, visits...),
+  consultations and uploaded documents into chunks, and stored in a Convex full-text search
+  index. The assistant gets a roster of all patients, pre-retrieved passages for the question,
+  and tools: `search_records`, `get_patient_record`, `find_patients`, `list_appointments`,
+  `predict_conditions` (the prediction model), `get_condition_info`, `check_medications`
+  (allergies, interactions, pregnancy, eGFR) and `read_document`.
+- Files: text, PDF and Word files are converted to text in the browser and indexed; images and
+  scanned PDFs (up to 10 MB) are transcribed by the model through `/api/ingest`. Uploads are
+  limited to 20 MB. Files can be attached to a patient or kept general.
+- Answers stream back as they are generated and are saved in Convex as chat threads.
+- Search is keyword-based (Convex full-text search), not vector embeddings: the assistant
+  compensates by searching several phrasings, but very loosely worded questions can miss.
 
 ## Verification checklist
 
 | Step | How to verify |
 |------|---------------|
-| Backend tests | `npm test` → 16 tests pass; `npm run typecheck` → no output |
+| Tests | `npm test` → 39 tests pass; `npm run typecheck` → no output |
 | Convex pushed | `npx convex dev --once` completes without errors |
-| Seeded | `npm run seed` → `seeded: true`, `skippedLinks: []` |
-| ML service | `curl localhost:8000/health` → `{"status":"ok",...}`; `cd ml && pytest` |
-| Frontend | `cd frontend && npm run build` succeeds |
-| Sign-in reaches Convex | After login, the browser console has no “Backend sign-in failed” |
-| Prediction | Health Prediction → enter `fever`, `cough` → disease, scores and medicines appear |
-| Patients | Consultation → name + Stop saves `P-001`; Patients page lists it |
+| Auth | Sign up, sign out, sign in again |
+| Samples | Load sample patients → 20 patients, 8 appointments today |
+| Prediction | Health Prediction → `fever`, `cough`, `sore throat` → ranked conditions, medicines |
+| Assistant | Settings → AI Assistant shows "Enabled"; ask "Who is on warfarin and when was their last INR?" |
+| Files | Attach a PDF in the assistant → it shows as indexed; ask about its content |
 
 ## Troubleshooting
 
 | Symptom | Likely cause / fix |
 |---------|--------------------|
-| Console: “The backend rejected the sign-in token” | `convex/auth.config.ts` must match your Firebase project id (`FIREBASE_PROJECT_ID`, default `medivise-45810`). Re-push with `npx convex dev --once`. |
-| “Unauthenticated” / “User profile not found” | Sign out and in again; the profile is created at login. |
-| Patients page is empty | Open the browser console; errors are logged there. Usually `VITE_CONVEX_URL` is unset or points at a different deployment than the one you seeded. |
-| “None of the entered symptoms were recognised” | Use standard terms (see the chips on the Prediction page). Unrecognised symptoms are listed in the result. |
-| `seeded: false` | Already seeded; pass `'{"reset": true}'` to reload. |
-| `pip` fails building numpy | Use the repo's `requirements.txt` (ranges). The old `numpy==1.24.0` pin cannot build on Python 3.12+. |
-| Prediction always `knowledge-base` | `ML_SERVICE_URL` unset or unreachable from Convex (see “Connecting it to Convex”); check `npx convex logs`. |
+| Sign-up/sign-in fails with a JWT / key error | Run `npx @convex-dev/auth` (or `--prod`) for that deployment. |
+| App shows "Backend not configured" | `VITE_CONVEX_URL` was not set when the frontend was built. Set it and rebuild/redeploy. |
+| Assistant says it is not configured | `ANTHROPIC_API_KEY` missing in that Vercel environment, or not redeployed since adding it. |
+| Assistant: "missing CONVEX_URL / VITE_CONVEX_URL" | Set `VITE_CONVEX_URL` (or `CONVEX_URL`) in Vercel and redeploy. |
+| Assistant: 401 / "authentication" error from Anthropic | The key is wrong or revoked; replace it in Vercel and redeploy. |
+| Assistant: "Your session has expired" | Sign out and in again. The `/api` URL must point at the same Convex deployment as the app. |
+| Assistant locally: 404 or network error | `npm run dev:api` is not running (the Vite dev server proxies `/api` to port 3001). |
+| "Forgot password" says email is not configured | Set `AUTH_RESEND_KEY` on the Convex deployment. |
+| Prediction always says `knowledge-base` | Expected unless `ML_SERVICE_URL` is set and reachable from Convex. |
 
 ## Known limitations (read before any real use)
 
-- **Not clinically validated.** The disease/symptom weights and medicine confidences are
-  demonstration data. 15 of the 84 diseases have no symptom links and can never be predicted;
-  80 medicines have a name only (no dosage or contraindications). A clinician must review them.
-- Scores are a symptom-overlap measure, **not probabilities**, and favour diseases with few listed
-  symptoms (for example “chest pain + shortness of breath” ranks Hyperlipidemia above Coronary
-  Artery Disease in the built-in scorer). Age and gender are accepted but not used.
-- The dashboard figures and the “AI Review” text on the consultation page are still static.
-- `backend/` (the old Express + MongoDB server) is no longer used by the frontend and can be deleted.
-- Patient data is stored in Convex: before real patients, review your privacy/compliance
-  obligations (e.g. HIPAA/GDPR), access logging and data-residency requirements.
+- **Not clinically validated.** Disease profiles, symptom weights, medicine suggestions and the
+  drug-safety tables are demonstration data. The safety screen covers a small set of well-known
+  allergy, interaction, pregnancy and kidney-function rules: **no warning does not mean safe**.
+- Prediction probabilities are computed from hand-written profiles, not learned from patient
+  data; they are a ranking aid, not calibrated risk estimates.
+- The AI assistant can be wrong. It is instructed to cite records and say when information is
+  missing, but its answers must be checked against the record.
+- Patient data is stored in Convex and sent to the Claude API when the assistant is used. Before
+  real patients, review your privacy and compliance obligations (e.g. HIPAA/GDPR: business
+  associate agreements, access logging, data residency, retention).
+- Facial recognition on the consultation page is a placeholder and does nothing.

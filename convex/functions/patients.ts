@@ -3,6 +3,7 @@ import type { Doc, Id } from "../_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "../_generated/server";
 import { mutation, query } from "../_generated/server";
 import { requireOwnPatient, requireUser } from "../lib/auth";
+import { patientSafetyContext, screenMedications } from "../lib/clinical";
 import { reindexPatient } from "../lib/indexing";
 import { patientSummaryLine } from "../lib/records";
 import { patientProfileFields, patientStatusValidator, prescriptionEntry, symptomEntry } from "../schema";
@@ -102,6 +103,25 @@ export const getPatientRecord = query({
         createdAt: p.createdAt,
       })),
     };
+  },
+});
+
+/**
+ * Allergy conflicts and interactions: of the current regimen, or - when `proposed` is given - of
+ * the proposed drugs against the patient's allergies and current medications.
+ */
+export const medicationSafety = query({
+  args: { id: v.id("patients"), proposed: v.optional(v.array(v.string())) },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx);
+    const p = await requireOwnPatient(ctx, user, args.id);
+    const proposed = (args.proposed ?? []).map((d) => d.trim()).filter(Boolean).slice(0, 30);
+    return screenMedications({
+      current: (p.medications ?? []).map((m) => m.name),
+      proposed,
+      allergies: p.allergies ?? [],
+      context: patientSafetyContext(p),
+    });
   },
 });
 

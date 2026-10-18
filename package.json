@@ -2,13 +2,15 @@
   "name": "medivise",
   "private": true,
   "version": "1.0.0",
-  "description": "Medivise — Convex backend, ML service and React frontend",
+  "description": "Medivise — Convex backend, Vercel assistant API, ML service and React frontend",
   "scripts": {
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy",
+    "dev:api": "tsx scripts/dev-api.ts",
     "seed": "convex run functions/seed:seedDatabase",
     "export:ml": "tsx scripts/export-knowledge.ts",
-    "typecheck": "tsc -p convex --noEmit",
+    "gen:api": "node scripts/gen-convex-api.mjs",
+    "typecheck": "tsc -p convex --noEmit && tsc -p tsconfig.json && tsc -p tsconfig.api.json",
     "test": "vitest run"
   },
   "dependencies": {

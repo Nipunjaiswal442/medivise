@@ -1,326 +1,325 @@
-import { useState, FormEvent } from "react";
-import { healthService, type HealthPredictionRequest, type PredictionResult } from "@/services/health.service";
-import { errorMessage } from "@/convex/client";
-import { SparklesIcon, StethoscopeIcon, AlertTriangleIcon } from "@/components/ui/Icons";
-import styles from "./PredictionPage.module.css";
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useAction, useMutation, useQuery } from 'convex/react';
+import type { Doc } from '../../../convex/_generated/dataModel';
+import { api } from '@/convex/api';
+import { errorMessage } from '@/convex/client';
+import PatientPicker from '@/components/PatientPicker';
+import { SparklesIcon, StethoscopeIcon, AlertTriangleIcon, XIcon } from '@/components/ui/Icons';
+import styles from './PredictionPage.module.css';
+
+const COMMON_SYMPTOMS = [
+  'Fever', 'Cough', 'Shortness of breath', 'Chest pain', 'Fatigue', 'Headache', 'Nausea', 'Vomiting',
+  'Diarrhea', 'Abdominal pain', 'Sore throat', 'Runny nose', 'Body aches', 'Joint pain', 'Dizziness',
+  'Rash', 'Itching', 'Swelling', 'Weight loss', 'Increased thirst', 'Frequent urination', 'Painful urination',
+  'Back pain', 'Blurred vision', 'Heartburn', 'Palpitations', 'Wheezing', 'Night sweats', 'Insomnia', 'Anxiety',
+];
+
+function useDebounced<T>(value: T, ms = 200): T {
+  const [v, setV] = useState(value);
+  const key = JSON.stringify(value);
+  useEffect(() => {
+    const t = setTimeout(() => setV(value), ms);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, ms]);
+  return v;
+}
+
+const tone = (p: number) => (p >= 60 ? '#16A34A' : p >= 25 ? '#CA8A04' : '#6B7280');
 
 export default function PredictionPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<PredictionResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [symptoms, setSymptoms] = useState<string[]>([""]);
-  const [age, setAge] = useState("");
-  const [gender, setGender] = useState("Male");
-  const [patientName, setPatientName] = useState("");
+  const known = useQuery(api.functions.predict.knownSymptoms, {});
+  const ml = useQuery(api.functions.predict.mlStatus, {});
+  const recent = useQuery(api.functions.predict.getPredictions, { limit: 8 });
+  const save = useMutation(api.functions.predict.predictHealth);
+  const askMl = useAction(api.functions.predict.predictWithMlService);
 
-  const COMMON_SYMPTOMS = [
-    "Fever", "Cough", "Shortness of breath", "Chest pain", "Fatigue",
-    "Headache", "Nausea", "Vomiting", "Diarrhea", "Abdominal pain",
-    "Sore throat", "Runny nose", "Nasal congestion", "Sneezing",
-    "Body aches", "Joint pain", "Muscle weakness", "Dizziness",
-    "Rash", "Itching", "Swelling", "Weight loss", "Weight gain",
-    "Increased thirst", "Frequent urination", "Painful urination",
-    "Back pain", "Neck pain", "Blurred vision", "Hearing loss",
-    "Hoarseness", "Difficulty swallowing", "Heartburn", "Bloating",
-    "Jaundice", "Pale skin", "Night sweats", "Insomnia",
-    "Memory loss", "Confusion", "Anxiety", "Depression",
-    "Irritability", "Tremors", "Numbness", "Tingling", "Weakness",
-    "Palpitations", "Swollen ankles", "Wheezing", "Snoring",
-  ];
+  const [patient, setPatient] = useState<Doc<'patients'> | null>(null);
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('Male');
+  const [days, setDays] = useState('');
+  const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [draft, setDraft] = useState('');
+  const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [mlResult, setMlResult] = useState<{ name: string; probability: number }[] | null>(null);
 
-  const handleSymptomChange = (index: number, value: string) => {
-    const next = [...symptoms];
-    next[index] = value;
-    setSymptoms(next);
+  const ageNum = parseInt(age, 10);
+  const args = useDebounced({
+    symptoms,
+    age: Number.isFinite(ageNum) ? ageNum : undefined,
+    gender,
+    durationDays: parseInt(days, 10) || undefined,
+    patientId: patient?._id,
+  });
+  const result = useQuery(api.functions.predict.preview, args.symptoms.length ? args : 'skip');
+
+  const add = (raw: string) => {
+    const parts = raw.split(/[,;]/).map((s) => s.trim()).filter(Boolean);
+    setSymptoms((prev) => [...prev, ...parts.filter((p) => !prev.some((x) => x.toLowerCase() === p.toLowerCase()))].slice(0, 30));
+    setDraft('');
+    setMlResult(null);
   };
+  const remove = (s: string) => {
+    setSymptoms((prev) => prev.filter((x) => x !== s));
+    setMlResult(null);
+  };
+  const replace = (from: string, to: string) => setSymptoms((prev) => prev.map((x) => (x === from ? to : x)));
+  const toggle = (s: string) => (symptoms.includes(s) ? remove(s) : add(s));
 
-  const addSymptom = () => setSymptoms([...symptoms, ""]);
-
-  const removeSymptom = (index: number) => {
-    if (symptoms.length > 1) {
-      setSymptoms(symptoms.filter((_, i) => i !== index));
+  const choosePatient = (p: Doc<'patients'> | null) => {
+    setPatient(p);
+    if (p) {
+      setAge(String(p.age));
+      setGender(p.gender);
     }
   };
 
-  const handleSelectSymptom = (symptom: string) => {
-    const filled = symptoms.filter((s) => s.trim());
-    setSymptoms([...filled, symptom]);
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
+  const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setResult(null);
-    setIsLoading(true);
+    if (draft.trim()) add(draft);
+  };
 
-    const filledSymptoms = symptoms.filter((s) => s.trim());
-    if (filledSymptoms.length === 0) {
-      setError("Please enter at least one symptom.");
-      setIsLoading(false);
-      return;
-    }
-
-    const ageNum = parseInt(age, 10);
-    if (isNaN(ageNum) || ageNum < 0 || ageNum > 120) {
-      setError("Please enter a valid age (0-120).");
-      setIsLoading(false);
-      return;
-    }
-
+  const record = async () => {
+    setBusy(true);
+    setMessage(null);
     try {
-      const request: HealthPredictionRequest = {
-        symptoms: filledSymptoms,
-        age: ageNum,
-        gender,
-      };
-      const res = await healthService.predictHealth(request);
-      setResult(res);
+      await save({ ...args, symptoms });
+      setMessage({ kind: 'success', text: `Prediction saved${patient ? ` to ${patient.name}'s record` : ''}.` });
     } catch (err) {
-      setError(errorMessage(err, "Prediction failed. Please try again."));
+      setMessage({ kind: 'error', text: errorMessage(err) });
     } finally {
-      setIsLoading(false);
+      setBusy(false);
     }
   };
 
-  const confidenceColor = (conf: number) => {
-    if (conf >= 70) return "#16A34A";
-    if (conf >= 40) return "#CA8A04";
-    return "#DC2626";
+  const compareMl = async () => {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const r = await askMl({ ...args, symptoms });
+      setMlResult(r.ranking.map((x) => ({ name: x.name, probability: x.probability })));
+      if (r.source !== 'ml-service') setMessage({ kind: 'error', text: 'The ML service did not answer; the built-in model was used.' });
+    } catch (err) {
+      setMessage({ kind: 'error', text: errorMessage(err) });
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const top = result?.ranking[0];
+  const suggestionsFor = useMemo(() => result?.suggestions ?? {}, [result]);
 
   return (
     <div className={styles.container}>
       <header className={styles.pageHeader}>
-        <div className={styles.headerContent}>
-          <StethoscopeIcon size={32} className={styles.headerIcon} />
-          <div>
-            <h1 className={styles.title}>Health Prediction</h1>
-            <p className={styles.subtitle}>
-              Enter patient symptoms to get AI-powered disease prediction
-              and medicine advice with confidence scores.
-            </p>
-          </div>
+        <StethoscopeIcon size={30} className={styles.headerIcon} />
+        <div>
+          <h1 className="ui-title">Health Prediction</h1>
+          <p className="ui-subtitle">
+            Results update instantly as you add symptoms. Age, sex and duration are taken into account; red flags are shown first.
+          </p>
         </div>
       </header>
 
-      {error && (
-        <div className={styles.errorAlert}>
-          <AlertTriangleIcon size={16} />
-          <span>{error}</span>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className={styles.formCard}>
-        <div className={styles.formSection}>
-          <h2 className={styles.sectionTitle}>Patient Information</h2>
+      <div className={styles.layout}>
+        <form className="ui-card" onSubmit={onSubmit}>
+          <h2 className={styles.sectionTitle}>Patient</h2>
+          <PatientPicker value={patient?._id ?? null} onChange={choosePatient} placeholder="Optional: use an existing patient (age, sex, allergies)" />
           <div className={styles.formGrid}>
-            <div className={styles.fieldGroup}>
-              <label className={styles.fieldLabel}>Patient Name</label>
-              <input
-                type="text"
-                placeholder="Patient name"
-                value={patientName}
-                onChange={(e) => setPatientName(e.target.value)}
-                className={styles.input}
-              />
+            <div>
+              <label className="ui-label" htmlFor="pred-age">Age</label>
+              <input id="pred-age" className="ui-input" type="number" min={0} max={130} value={age} onChange={(e) => setAge(e.target.value)} placeholder="Years" />
             </div>
-            <div className={styles.fieldGroup}>
-              <label className={styles.fieldLabel}>Age</label>
-              <input
-                type="number"
-                min={0}
-                max={120}
-                placeholder="Age"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                className={styles.input}
-              />
-            </div>
-            <div className={styles.fieldGroup}>
-              <label className={styles.fieldLabel}>Gender</label>
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className={styles.input}
-              >
+            <div>
+              <label className="ui-label" htmlFor="pred-gender">Sex</label>
+              <select id="pred-gender" className="ui-input" value={gender} onChange={(e) => setGender(e.target.value)}>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="Other">Other / not stated</option>
               </select>
             </div>
+            <div>
+              <label className="ui-label" htmlFor="pred-days">Duration (days)</label>
+              <input id="pred-days" className="ui-input" type="number" min={0} value={days} onChange={(e) => setDays(e.target.value)} placeholder="Optional" />
+            </div>
           </div>
-        </div>
 
-        <div className={styles.formSection}>
-          <h2 className={styles.sectionTitle}>Symptoms</h2>
-          <p className={styles.sectionHint}>
-            Select or type symptoms.
-          </p>
-
-          <div className={styles.symptomChips}>
+          <h2 className={styles.sectionTitle} style={{ marginTop: '1.25rem' }}>Symptoms</h2>
+          <div className={styles.addRow}>
+            <input
+              className="ui-input"
+              list="known-symptoms"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Type a symptom (lay terms work: 'throwing up', 'SOB') and press Enter"
+              aria-label="Add symptom"
+            />
+            <button type="submit" className="ui-btn ui-btn-primary" disabled={!draft.trim()}>Add</button>
+            <datalist id="known-symptoms">{(known ?? []).map((s) => <option key={s} value={s} />)}</datalist>
+          </div>
+          {symptoms.length > 0 && (
+            <div className={styles.selected}>
+              {symptoms.map((s) => (
+                <span key={s} className={styles.selectedChip}>
+                  {s}
+                  <button type="button" onClick={() => remove(s)} aria-label={`Remove ${s}`}><XIcon size={12} /></button>
+                </span>
+              ))}
+              <button type="button" className="ui-btn ui-btn-ghost ui-btn-sm" onClick={() => setSymptoms([])}>Clear all</button>
+            </div>
+          )}
+          <p className="ui-muted" style={{ margin: '0.75rem 0 0.4rem', fontSize: '0.78rem' }}>Common symptoms</p>
+          <div className={styles.chips}>
             {COMMON_SYMPTOMS.map((s) => (
-              <button
-                key={s}
-                type="button"
-                className={styles.chip}
-                onClick={() => handleSelectSymptom(s)}
-              >
+              <button key={s} type="button" className={`${styles.chip} ${symptoms.includes(s) ? styles.chipActive : ''}`} onClick={() => toggle(s)}>
                 {s}
               </button>
             ))}
           </div>
+        </form>
 
-          <div className={styles.symptomList}>
-            {symptoms.map((symptom, index) => (
-              <div key={index} className={styles.symptomRow}>
-                <input
-                  type="text"
-                  placeholder={`Symptom ${index + 1} (e.g. Headache)`}
-                  value={symptom}
-                  onChange={(e) => handleSymptomChange(index, e.target.value)}
-                  className={styles.symptomInput}
-                />
-                <button
-                  type="button"
-                  className={styles.removeBtn}
-                  onClick={() => removeSymptom(index)}
-                  aria-label={`Remove symptom ${index + 1}`}
-                >
-                  &times;
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              className={styles.addBtn}
-              onClick={addSymptom}
-            >
-              + Add Symptom
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.formActions}>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={styles.predictBtn}
-          >
-            {isLoading ? (
-              <>
-                <span className={styles.spinner} />
-                Analyzing…
-              </>
-            ) : (
-              <>
-                <SparklesIcon size={16} />
-                Generate Prediction
-              </>
-            )}
-          </button>
-        </div>
-      </form>
-
-      {result && (
-        <div className={styles.resultsCard}>
-          <div className={styles.resultsHeader}>
-            <h2 className={styles.resultsTitle}>Prediction Results</h2>
-            <p className={styles.patientInfo}>
-              {patientName || "Patient"} &bull; {age} years &bull; {gender}
-            </p>
-          </div>
-
-          {result.unmatchedSymptoms.length > 0 && (
-            <p className={styles.confidenceText}>
-              Not recognised, so ignored: {result.unmatchedSymptoms.join(", ")}
-            </p>
-          )}
-
-          <div className={styles.primaryPrediction}>
-            <div className={styles.diseaseBadge}>
-              <span className={styles.diseaseName}>{result.disease.name}</span>
-              <span className={styles.confidenceBadge} style={{ backgroundColor: confidenceColor(result.disease.confidence) }}>
-                {result.disease.confidence}%
-              </span>
+        <section className="ui-card">
+          {symptoms.length === 0 ? (
+            <div className="ui-empty">
+              <SparklesIcon size={28} style={{ margin: '0 auto 0.5rem' }} />
+              Add symptoms to see a ranked differential.
             </div>
-            <p className={styles.confidenceText}>
-              Confidence: {result.disease.confidence}%
-            </p>
-            <div className={styles.confidenceBar}>
-              <div
-                className={styles.confidenceFill}
-                style={{ width: `${result.disease.confidence}%`, backgroundColor: confidenceColor(result.disease.confidence) }}
-              />
-            </div>
-          </div>
-
-          <div className={styles.allPredictions}>
-            <h3 className={styles.subsectionTitle}>All Predictions</h3>
-            <div className={styles.predictionsList}>
-              {result.allPredictions.map((p: { diseaseName: string; diseaseId: string; confidence: number }, i: number) => (
-                <div key={i} className={styles.predictionItem}>
-                  <span className={styles.predictionDisease}>{p.diseaseName || p.diseaseId}</span>
-                  <span className={styles.predictionConfidence}>{p.confidence}%</span>
-                  <div className={styles.miniConfidenceBar}>
-                    <div
-                      className={styles.miniConfidenceFill}
-                      style={{ width: `${p.confidence}%`, backgroundColor: confidenceColor(p.confidence) }}
-                    />
-                  </div>
+          ) : !result ? (
+            <p className="ui-muted"><span className="ui-spin" /> Calculating…</p>
+          ) : (
+            <>
+              {result.redFlags.map((f) => (
+                <div key={f.id} className="ui-alert ui-alert-error" style={{ marginBottom: '0.5rem' }}>
+                  <AlertTriangleIcon size={16} />
+                  <span><strong>{f.title}.</strong> {f.advice}</span>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className={styles.medicineAdvice}>
-            <h3 className={styles.subsectionTitle}>Recommended Medicines</h3>
-            <p className={styles.medicineDisclaimer}>
-              Confidence scores indicate how commonly each medicine is used for
-              this condition. Always consult a licensed physician before
-              starting any medication.
-            </p>
-            <div className={styles.medicineList}>
-              {result.medicines.map((med: { name: string; confidence: number; dosage?: string; frequency?: string; duration?: string; contraindications?: string }, i: number) => (
-                <div key={i} className={styles.medicineItem}>
-                  <div className={styles.medicineInfo}>
-                    <span className={styles.medicineName}>{med.name}</span>
-                    <span className={styles.medicineConfidence} style={{ backgroundColor: confidenceColor(med.confidence) }}>
-                      {med.confidence}%
-                    </span>
-                  </div>
-                  <div className={styles.medicineDetails}>
-                    {med.dosage && <span className={styles.detailChip}>Dosage: {med.dosage}</span>}
-                    {med.frequency && <span className={styles.detailChip}>Frequency: {med.frequency}</span>}
-                    {med.duration && <span className={styles.detailChip}>Duration: {med.duration}</span>}
-                    {med.contraindications && (
-                      <span className={styles.detailChip + " " + styles.detailWarning}>
-                        ! {med.contraindications}
+              {result.unmatchedSymptoms.length > 0 && (
+                <div className="ui-alert ui-alert-warning" style={{ marginBottom: '0.75rem' }}>
+                  <span>
+                    Not recognised (ignored):{' '}
+                    {result.unmatchedSymptoms.map((u) => (
+                      <span key={u} style={{ marginRight: 8 }}>
+                        <strong>{u}</strong>
+                        {suggestionsFor[u]?.length ? (
+                          <> - did you mean{' '}
+                            {suggestionsFor[u].map((s) => (
+                              <button key={s} type="button" className="ui-btn ui-btn-ghost ui-btn-sm" onClick={() => replace(u, s)}>{s}</button>
+                            ))}
+                          </>
+                        ) : null}
                       </span>
-                    )}
-                  </div>
+                    ))}
+                  </span>
                 </div>
-              ))}
-              {result.medicines.length === 0 && (
-                <p className={styles.noMedicines}>
-                  No specific medicine recommendations available for this
-                  condition. Please consult a physician.
-                </p>
               )}
-            </div>
-          </div>
+              {result.negated.length > 0 && <p className="ui-muted" style={{ fontSize: '0.78rem' }}>Treated as absent: {result.negated.join(', ')}</p>}
 
-          <div className={styles.medicalDisclaimer}>
-            <AlertTriangleIcon size={16} />
-            <p>
-              <strong>Medical Disclaimer:</strong> Scores are symptom-match
-              estimates from a demonstration knowledge base, not calibrated
-              probabilities, and age and gender are not yet used. This is not a
-              diagnosis and is no substitute for professional medical advice,
-              diagnosis, or treatment. A qualified clinician must verify every
-              suggestion.
-            </p>
-          </div>
-        </div>
+              {top ? (
+                <>
+                  <div className={styles.top}>
+                    <div>
+                      <span className="ui-muted" style={{ fontSize: '0.75rem' }}>Most likely in the knowledge base</span>
+                      <h2 className={styles.topName}>{top.name} {top.urgent && <span className="ui-badge ui-badge-red">urgent</span>}</h2>
+                      <p className="ui-muted">{top.description} · {top.category}</p>
+                    </div>
+                    <span className={styles.topPct} style={{ color: tone(top.probability) }}>{top.probability}%</span>
+                  </div>
+                  <table className="ui-table" style={{ marginTop: '1rem' }}>
+                    <thead><tr><th>Condition</th><th style={{ width: '38%' }}>Probability</th><th>Explains</th><th>Ask about</th></tr></thead>
+                    <tbody>
+                      {result.ranking.map((r) => (
+                        <tr key={r.name}>
+                          <td><strong>{r.name}</strong>{r.urgent && <span className="ui-badge ui-badge-red" style={{ marginLeft: 4 }}>urgent</span>}</td>
+                          <td>
+                            <div className={styles.bar}><span style={{ width: `${Math.max(2, r.probability)}%`, background: tone(r.probability) }} /></div>
+                            <span className="ui-muted" style={{ fontSize: '0.75rem' }}>{r.probability}% · covers {r.coverage}% of its profile</span>
+                          </td>
+                          <td className="ui-muted">{r.matchedSymptoms.join(', ')}</td>
+                          <td className="ui-muted">{r.askAbout.join(', ') || '–'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <h3 className={styles.sectionTitle} style={{ marginTop: '1.25rem' }}>Treatment options for {top.name}</h3>
+                  {result.safetyWarnings.length > 0 && (
+                    <div className="ui-alert ui-alert-error" style={{ marginBottom: '0.5rem' }}>
+                      <AlertTriangleIcon size={16} />
+                      <span>{result.safetyWarnings.map((w) => w.message).join('; ')}</span>
+                    </div>
+                  )}
+                  {result.medicines.length === 0 ? (
+                    <p className="ui-muted">{result.treatmentNotes.join(' ') || 'No medicine recommendations in the knowledge base.'}</p>
+                  ) : (
+                    <ul className={styles.meds}>
+                      {result.medicines.map((m) => (
+                        <li key={m.name} className={m.warnings.length ? styles.medWarn : undefined}>
+                          <div className={styles.medHead}>
+                            <strong>{m.name}</strong>
+                            <span className="ui-badge" title="How commonly it is used for this condition in the knowledge base">usage {m.confidence}%</span>
+                          </div>
+                          <span className="ui-muted" style={{ fontSize: '0.78rem' }}>
+                            {[m.dosage, m.frequency, m.duration].filter(Boolean).join(' · ') || 'Dosage not specified in the knowledge base'}
+                          </span>
+                          {m.contraindications && <span style={{ fontSize: '0.75rem', color: 'var(--color-warning)' }}>Contraindications: {m.contraindications}</span>}
+                          {m.warnings.map((w) => <span key={w} style={{ fontSize: '0.75rem', color: 'var(--color-error)', fontWeight: 600 }}>⚠ {w}</span>)}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {result.treatmentNotes.length > 0 && result.medicines.length > 0 && <p className="ui-muted" style={{ marginTop: 6 }}>{result.treatmentNotes.join(' ')}</p>}
+
+                  <div className={styles.actions}>
+                    <button className="ui-btn ui-btn-primary" onClick={record} disabled={busy}>
+                      <SparklesIcon size={14} /> Save prediction{patient ? ' to record' : ''}
+                    </button>
+                    {ml?.configured && (
+                      <button className="ui-btn ui-btn-outline" onClick={compareMl} disabled={busy}>Compare with ML service</button>
+                    )}
+                    {busy && <span className="ui-spin" />}
+                    {message && <span className={message.kind === 'success' ? 'ui-badge ui-badge-green' : 'ui-badge ui-badge-red'}>{message.text}</span>}
+                  </div>
+                  {mlResult && (
+                    <p className="ui-muted" style={{ marginTop: '0.5rem' }}>
+                      ML service: {mlResult.map((r) => `${r.name} ${r.probability}%`).join(' · ')}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="ui-empty">No condition in the knowledge base matches these symptoms.</p>
+              )}
+
+              <div className={styles.disclaimer}>
+                <AlertTriangleIcon size={14} />
+                <p>
+                  Model {result.model}: naive-Bayes ranking over a demonstration knowledge base. Probabilities are relative to that
+                  knowledge base, not calibrated clinical probabilities, and this is not a diagnosis. A clinician must verify every suggestion.
+                </p>
+              </div>
+            </>
+          )}
+        </section>
+      </div>
+
+      {recent && recent.length > 0 && (
+        <section className="ui-card" style={{ marginTop: '1rem' }}>
+          <div className="ui-card-title">Recent saved predictions</div>
+          <table className="ui-table">
+            <thead><tr><th>When</th><th>Top condition</th><th>Symptoms</th><th>Source</th></tr></thead>
+            <tbody>
+              {recent.map((p) => (
+                <tr key={p.id}>
+                  <td className="ui-muted">{new Date(p.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                  <td><strong>{p.diseaseName}</strong> <span className="ui-muted">{p.confidence}%</span></td>
+                  <td className="ui-muted">{p.symptoms.join(', ')}</td>
+                  <td><span className="ui-badge">{p.source}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
       )}
     </div>
   );

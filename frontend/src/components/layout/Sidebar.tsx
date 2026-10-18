@@ -8,11 +8,13 @@ import {
   NewspaperIcon,
   SettingsIcon,
   SparklesIcon,
+  CalendarIcon,
 } from '@/components/ui/Icons';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboardIcon },
+  { to: '/appointments', label: 'Appointments', icon: CalendarIcon },
   { to: '/chat', label: 'AI Assistant', icon: MessageSquareIcon },
   { to: '/patients', label: 'Patients', icon: UsersIcon },
   { to: '/consultation', label: 'Start Consultation', icon: StethoscopeIcon },
@@ -49,7 +51,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       </nav>
 
       <div className={styles.footer}>
-        {!collapsed && <p className={styles.footerText}>Medivise v1.0</p>}
+        {!collapsed && <p className={styles.footerText}>Medivise v2.0</p>}
       </div>
     </aside>
   );

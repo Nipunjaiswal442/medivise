@@ -1,9 +1,8 @@
 const env = {
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL ?? '/api',
-  LLM_BASE_URL: import.meta.env.VITE_LLM_BASE_URL ?? '/api/llm',
   CONVEX_URL: import.meta.env.VITE_CONVEX_URL as string | undefined,
+  /** Where the Vercel functions (/api/chat etc.) live; same origin by default. */
+  API_BASE_URL: (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? '/api',
   APP_NAME: 'Medivise',
-  TOKEN_KEY: 'medivise_token',
 } as const;
 
 export default env;

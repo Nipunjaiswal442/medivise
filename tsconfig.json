@@ -1,0 +1,24 @@
+{
+  /*
+   * Read by Vercel when it compiles the api/ functions. They are emitted as CommonJS (the root
+   * package is not "type": "module"), so keep "module": "commonjs" here: ESM output would break
+   * the deployed functions. Tests and dev scripts are checked by tsconfig.api.json.
+   */
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "types": ["node"],
+    // @convex-dev/auth's legacy (node10) entry points name typings that do not exist
+    "paths": { "@convex-dev/auth/providers/*": ["./node_modules/@convex-dev/auth/dist/providers/*"] }
+  },
+  "include": ["api", "server"],
+  "exclude": ["server/**/*.test.ts"]
+}

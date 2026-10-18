@@ -12,9 +12,21 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      // The AI assistant's serverless functions; run them locally with `npm run dev:api` (repo root)
       '/api': {
-        target: 'http://localhost:5001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
+      },
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          convex: ['convex/react', '@convex-dev/auth/react'],
+          markdown: ['react-markdown', 'remark-gfm'],
+        },
       },
     },
   },

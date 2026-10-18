@@ -4,7 +4,7 @@ import type { Doc, Id } from "../_generated/dataModel";
 import type { QueryCtx } from "../_generated/server";
 import { action, internalMutation, mutation, query } from "../_generated/server";
 import { requireOwnPatient, requireUser } from "../lib/auth";
-import { screenMedications, type SafetyWarning } from "../lib/clinical";
+import { patientSafetyContext, screenMedications, type SafetyWarning } from "../lib/clinical";
 import {
   diseaseInfo,
   knownSymptomNames,
@@ -48,7 +48,7 @@ function withSafety(output: PredictOutput, patient: Doc<"patients"> | null): Omi
   const allergies = patient?.allergies ?? [];
   const current = (patient?.medications ?? []).map((m) => m.name);
   const proposed = output.medicines.map((m) => m.name);
-  const safetyWarnings = patient ? screenMedications({ current, proposed, allergies }) : [];
+  const safetyWarnings = patient ? screenMedications({ current, proposed, allergies, context: patientSafetyContext(patient) }) : [];
   return {
     ...output,
     medicines: output.medicines.map((m) => ({

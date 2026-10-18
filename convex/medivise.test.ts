@@ -8,7 +8,7 @@ import { diseaseMedicineMappings, diseaseSymptomMappings } from "./data/mappings
 import { medicines } from "./data/medicines";
 import { samplePatients } from "./data/samplePatients";
 import { symptoms } from "./data/symptoms";
-import { checkAllergies, checkInteractions } from "./lib/clinical";
+import { checkAllergies, checkInteractions, patientSafetyContext, screenMedications } from "./lib/clinical";
 import { predict, resolveSymptom } from "./lib/predictor";
 import schema from "./schema";
 
@@ -516,6 +516,44 @@ describe("medication safety screening", () => {
     // only pairs that involve a proposed drug are reported
     expect(checkInteractions(["Warfarin", "Aspirin"], ["Paracetamol"])).toEqual([]);
     expect(checkInteractions(["Clopidogrel", "Omeprazole"]).length).toBe(1);
+  });
+
+  test("pregnancy and kidney-function contraindications", () => {
+    const pregnant = screenMedications({ current: [], proposed: ["Ciprofloxacin", "Cephalexin"], allergies: [], context: { pregnant: true } });
+    expect(pregnant).toHaveLength(1);
+    expect(pregnant[0]).toMatchObject({ kind: "pregnancy", severity: "major", drugs: ["Ciprofloxacin"] });
+    expect(screenMedications({ current: [], proposed: ["Ciprofloxacin"], allergies: [] })).toEqual([]);
+
+    // the strictest eGFR threshold wins
+    const metformin = (egfr: number) => screenMedications({ current: ["Metformin"], allergies: [], context: { egfr } });
+    expect(metformin(25)).toMatchObject([{ kind: "renal", severity: "major" }]);
+    expect(metformin(40)).toMatchObject([{ kind: "renal", severity: "moderate" }]);
+    expect(metformin(80)).toEqual([]);
+
+    expect(
+      patientSafetyContext({
+        chronicConditions: ["Pregnancy, 22 weeks"],
+        labResults: [
+          { test: "eGFR", value: "44", date: "2026-01-01" },
+          { test: "eGFR", value: "38", date: "2026-06-01" },
+        ],
+      }),
+    ).toEqual({ pregnant: true, egfr: 38 });
+    expect(patientSafetyContext({ notes: "Pregnancy test negative." }).pregnant).toBe(false);
+    expect(patientSafetyContext({ condition: "Hypertension" })).toEqual({ pregnant: false, egfr: undefined });
+  });
+
+  test("medicationSafety applies the patient's own pregnancy status and eGFR", async () => {
+    const t = convexTest(schema, modules);
+    const { as } = await clinician(t, "alice@example.com");
+    await as.mutation(api.functions.samples.loadSamplePatients, { todayStart });
+    const patients = await as.query(api.functions.patients.getPatients, {});
+    const byName = (name: string) => patients.find((p) => p.name === name)!._id;
+
+    const olivia = await as.query(api.functions.patients.medicationSafety, { id: byName("Olivia Martin"), proposed: ["Ciprofloxacin"] });
+    expect(olivia.some((w) => w.kind === "pregnancy" && w.drugs[0] === "Ciprofloxacin")).toBe(true);
+    const david = await as.query(api.functions.patients.medicationSafety, { id: byName("David Okafor"), proposed: ["Ibuprofen"] });
+    expect(david.some((w) => w.kind === "renal" && /eGFR 38/.test(w.message))).toBe(true);
   });
 });
 
